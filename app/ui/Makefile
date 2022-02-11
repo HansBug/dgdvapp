@@ -1,6 +1,8 @@
 .PHONY: all build clean
 
-GUI_PYS := main_window_ui.py
+GUI_PYS := \
+	main_window_ui.py \
+	dialog_config_ui.py
 
 all: build
 build: ${GUI_PYS}

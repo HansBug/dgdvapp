@@ -45,5 +45,5 @@ run: ui
 build: ui
 	$(PYINSTALLER) -D -F -n app -w "${ENTRY_PY}"
 clean:
-	rm -rf build dist
+	rm -rf build dist app.spec
 	$(MAKE) -C "${SRC_UI_DIR}" clean

@@ -1211,4 +1211,4 @@ fabric.properties
 !/docs/source/_static/**/*
 !/runs/artifacts
 /runs/artifacts/*
-/app/gui/ui/*_ui.py
+/app/ui/*_ui.py
