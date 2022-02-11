@@ -132,7 +132,6 @@ jobs:
       - name: Get CLI name
         shell: bash
         run: |
-          echo "ZIP_NAME=${{ env.APP_NAME }}-v${{ env.PACKAGE_VERSION }}-${{ env.OS_NAME }}-${{ env.CPU_ARCH }}-${{ env.GIT_COMMIT_ID }}-standalone" >> $GITHUB_ENV
           echo "CLI_NAME=${{ env.APP_NAME }}-v${{ env.PACKAGE_VERSION }}-${{ env.OS_NAME }}-${{ env.CPU_ARCH }}" >> $GITHUB_ENV
       - name: Build standalone cli
         shell: bash
@@ -142,5 +141,5 @@ jobs:
       - name: Upload executable files to artifacts
         uses: actions/upload-artifact@v2
         with:
-          name: app-v${{ env.PACKAGE_VERSION }}-${{ env.OS_NAME }}-${{ env.CPU_ARCH }}-${{ env.GIT_COMMIT_ID }}
+          name: ${{ env.APP_NAME }}-v${{ env.PACKAGE_VERSION }}-${{ env.OS_NAME }}-${{ env.CPU_ARCH }}-${{ env.GIT_COMMIT_ID }}
           path: dist/app${{ env.EXEC_SUFFIX }}

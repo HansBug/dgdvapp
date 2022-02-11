@@ -6,7 +6,7 @@ from ...gui import update_main_window
 
 
 def run_gui():
-    app = QApplication(sys.argv)
+    app = QApplication([])
 
     main_window = QMainWindow()
     update_main_window(main_window)
