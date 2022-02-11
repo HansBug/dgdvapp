@@ -5,8 +5,8 @@ from ..ui import UIDialogConfig
 
 
 class DialogConfig(QDialog, UIDialogConfig):
-    def __init__(self):
-        QDialog.__init__(self)
+    def __init__(self, parent):
+        QDialog.__init__(self, parent)
         self.setupUi(self)
         self.setFixedSize(self.width(), self.height())
         self._init()

@@ -32,7 +32,7 @@ class AppMainWindow(QMainWindow, UIMainWindow):
         self.action_application.triggered.connect(self._event_open_dialog_config)
 
     def _event_open_dialog_config(self):
-        dialog = DialogConfig()
+        dialog = DialogConfig(self)
         dialog.exec_()
 
     def closeEvent(self, a0: QtGui.QCloseEvent) -> None:
