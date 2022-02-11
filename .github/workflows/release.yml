@@ -31,6 +31,12 @@ jobs:
         run: |
           echo "OS_NAME=Windows" >> $GITHUB_ENV
           echo "EXEC_SUFFIX=.exe" >> $GITHUB_ENV
+      - name: Get system version for macos
+        if: ${{ contains(matrix.os, 'macos') }}
+        shell: bash
+        run: |
+          echo "OS_NAME=MacOS" >> $GITHUB_ENV
+          echo "EXEC_SUFFIX=" >> $GITHUB_ENV
       - name: Checkout code
         uses: actions/checkout@v2
         with:
@@ -46,6 +52,10 @@ jobs:
         if: ${{ env.OS_NAME == 'Windows' }}
         run: |
           choco install tree cloc wget curl make zip
+      - name: Set up system dependences on macos
+        if: ${{ env.OS_NAME == 'MacOS' }}
+        run: |
+          brew install tree cloc wget curl make zip
       - name: Set up python ${{ matrix.python-version }}
         uses: actions/setup-python@v2
         with:
@@ -63,6 +73,10 @@ jobs:
           pip --version
           pip list
           tree .
+      - name: Build UI files
+        shell: bash
+        run: |
+          make ui
       - name: Get package version
         shell: bash
         run: |
