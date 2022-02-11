@@ -4,7 +4,7 @@ Overview:
 """
 
 #: Title of this project (should be `app`).
-__TITLE__ = "pyqt5-demo"
+__TITLE__ = "dgdvapp"
 
 #: Version of this project.
 __VERSION__ = "0.0.1"
