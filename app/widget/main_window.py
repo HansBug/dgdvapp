@@ -27,5 +27,5 @@ class AppMainWindow(QMainWindow, UIMainWindow):
         self.text_result.setPlainText(str(a + b))
 
     def _event_open_dialog_config(self):
-        dialog = DialogConfig()
+        dialog = DialogConfig(self)
         dialog.exec_()
