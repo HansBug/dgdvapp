@@ -33,7 +33,7 @@ class FormGenerate(QWidget, UIFormGenerate):
         def _edit_lost_possibility():
             current_items = self.lost_possibilities
             result_str, result_ok = QInputDialog.getMultiLineText(
-                self, 'Edit Perceptions', 'Update new lost_possibilities:', os.linesep.join(current_items))
+                self, 'Edit Lost Possibilities', 'Update new lost_possibilities:', os.linesep.join(current_items))
             if result_ok:
                 items = smart_sort(filter(bool, map(str.strip, result_str.splitlines())))
                 self.edit_lost_possibility.setText(','.join(items))
