@@ -7,63 +7,24 @@
     <x>0</x>
     <y>0</y>
     <width>282</width>
-    <height>345</height>
+    <height>188</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>PyQt5-Demo</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QPlainTextEdit" name="text_first">
+   <widget class="QPushButton" name="button_datagene">
     <property name="geometry">
      <rect>
-      <x>80</x>
+      <x>60</x>
       <y>50</y>
-      <width>131</width>
-      <height>31</height>
-     </rect>
-    </property>
-    <property name="placeholderText">
-     <string>a</string>
-    </property>
-   </widget>
-   <widget class="QPlainTextEdit" name="text_result">
-    <property name="geometry">
-     <rect>
-      <x>80</x>
-      <y>180</y>
-      <width>131</width>
-      <height>31</height>
-     </rect>
-    </property>
-    <property name="placeholderText">
-     <string>resulf of a + b</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="button_plus">
-    <property name="geometry">
-     <rect>
-      <x>80</x>
-      <y>140</y>
-      <width>131</width>
+      <width>171</width>
       <height>25</height>
      </rect>
     </property>
     <property name="text">
-     <string>PushButton</string>
-    </property>
-   </widget>
-   <widget class="QPlainTextEdit" name="text_second">
-    <property name="geometry">
-     <rect>
-      <x>80</x>
-      <y>90</y>
-      <width>131</width>
-      <height>31</height>
-     </rect>
-    </property>
-    <property name="placeholderText">
-     <string>b</string>
+     <string>Data &amp;Generation</string>
     </property>
    </widget>
   </widget>
@@ -76,10 +37,13 @@
      <height>28</height>
     </rect>
    </property>
-   <widget class="QMenu" name="menu_file">
+   <widget class="QMenu" name="menu_feature">
     <property name="title">
-     <string>&amp;FIle</string>
+     <string>&amp;Features</string>
     </property>
+    <addaction name="action_data_generation"/>
+    <addaction name="separator"/>
+    <addaction name="action_data_visualization"/>
    </widget>
    <widget class="QMenu" name="menu_About">
     <property name="title">
@@ -87,13 +51,28 @@
     </property>
     <addaction name="action_application"/>
    </widget>
-   <addaction name="menu_file"/>
+   <addaction name="menu_feature"/>
    <addaction name="menu_About"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <action name="action_application">
    <property name="text">
     <string>This &amp;Application</string>
+   </property>
+  </action>
+  <action name="action_data_generation">
+   <property name="text">
+    <string>Data &amp;Generation</string>
+   </property>
+  </action>
+  <action name="actionData_Visualization">
+   <property name="text">
+    <string>Data &amp;Visualization</string>
+   </property>
+  </action>
+  <action name="action_data_visualization">
+   <property name="text">
+    <string>Data &amp;Visualization</string>
    </property>
   </action>
  </widget>

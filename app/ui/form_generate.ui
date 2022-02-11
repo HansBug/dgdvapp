@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>form_generate</class>
+ <widget class="QWidget" name="form_generate">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>400</width>
+    <height>300</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Data Generation</string>
+  </property>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

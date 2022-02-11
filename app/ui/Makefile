@@ -2,7 +2,8 @@
 
 GUI_PYS := \
 	main_window_ui.py \
-	dialog_config_ui.py
+	dialog_config_ui.py \
+	form_generate_ui.py
 
 all: build
 build: ${GUI_PYS}
