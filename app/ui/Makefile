@@ -1,9 +1,11 @@
 .PHONY: all build clean
 
+GUI_PYS := main_window_ui.py
+
 all: build
-build: main_window_ui.py
+build: ${GUI_PYS}
+clean:
+	rm -rf ${GUI_PYS}
+
 %_ui.py: %.ui
 	python -m PyQt5.uic.pyuic "$<" -o "$@"
-
-clean:
-	rm -rf *_ui.py

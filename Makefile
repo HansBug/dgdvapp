@@ -1,9 +1,13 @@
-.PHONY: test unittest docs pdocs run_dev build clean
+.PHONY: test unittest run_dev docs pdocs ui run build clean
+
+PYTHON      ?= $(shell which python)
+PYINSTALLER ?= $(shell which pyinstaller)
 
 DOC_DIR     := ./docs
 TEST_DIR    := ./test
 SRC_DIR     := ./app
-SRC_GUI_DIR := ${SRC_DIR}/gui/ui
+SRC_UI_DIR  := ${SRC_DIR}/ui
+ENTRY_PY    := ./main.py
 
 RANGE_DIR      ?= .
 RANGE_TEST_DIR := ${TEST_DIR}/${RANGE_DIR}
@@ -35,12 +39,11 @@ pdocs:
 	$(MAKE) -C "${DOC_DIR}" prod
 
 ui:
-	$(MAKE) -C "${SRC_GUI_DIR}" build
-build:
-	pyinstaller -D -F -n app -w app_cli.py
+	$(MAKE) -C "${SRC_UI_DIR}" build
+run: ui
+	$(PYTHON) "${ENTRY_PY}"
+build: ui
+	$(PYINSTALLER) -D -F -n app -w "${ENTRY_PY}"
 clean:
-	rm -rf build dist app.spec
-	$(MAKE) -C "${SRC_GUI_DIR}" clean
-
-os:
-	echo ${OS}
+	rm -rf build dist
+	$(MAKE) -C "${SRC_UI_DIR}" clean
