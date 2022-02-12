@@ -18,7 +18,7 @@
     <rect>
      <x>150</x>
      <y>30</y>
-     <width>113</width>
+     <width>171</width>
      <height>25</height>
     </rect>
    </property>
@@ -37,7 +37,7 @@
     <rect>
      <x>150</x>
      <y>70</y>
-     <width>113</width>
+     <width>171</width>
      <height>25</height>
     </rect>
    </property>
@@ -82,12 +82,18 @@
     <rect>
      <x>150</x>
      <y>108</y>
-     <width>113</width>
+     <width>171</width>
      <height>25</height>
     </rect>
    </property>
    <property name="text">
     <string>0.1</string>
+   </property>
+   <property name="frame">
+    <bool>true</bool>
+   </property>
+   <property name="echoMode">
+    <enum>QLineEdit::Normal</enum>
    </property>
    <property name="alignment">
     <set>Qt::AlignCenter</set>
@@ -114,7 +120,7 @@
     <rect>
      <x>150</x>
      <y>148</y>
-     <width>113</width>
+     <width>171</width>
      <height>25</height>
     </rect>
    </property>
@@ -146,12 +152,15 @@
     <rect>
      <x>150</x>
      <y>188</y>
-     <width>91</width>
+     <width>141</width>
      <height>25</height>
     </rect>
    </property>
    <property name="text">
     <string>0.2,0.5,0.8,1</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
    </property>
    <property name="readOnly">
     <bool>true</bool>
@@ -176,9 +185,9 @@
   <widget class="QPushButton" name="button_edit_perception">
    <property name="geometry">
     <rect>
-     <x>240</x>
+     <x>290</x>
      <y>188</y>
-     <width>21</width>
+     <width>31</width>
      <height>25</height>
     </rect>
    </property>
@@ -191,12 +200,15 @@
     <rect>
      <x>150</x>
      <y>230</y>
-     <width>91</width>
+     <width>141</width>
      <height>25</height>
     </rect>
    </property>
    <property name="text">
     <string>0.2,0.5,0.8,1</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
    </property>
    <property name="readOnly">
     <bool>true</bool>
@@ -221,9 +233,9 @@
   <widget class="QPushButton" name="button_edit_lost_possibility">
    <property name="geometry">
     <rect>
-     <x>240</x>
+     <x>290</x>
      <y>230</y>
-     <width>21</width>
+     <width>31</width>
      <height>25</height>
     </rect>
    </property>

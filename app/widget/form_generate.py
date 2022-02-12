@@ -2,7 +2,7 @@ import os
 from typing import List
 
 from PyQt5.Qt import QWidget, QInputDialog
-
+from types import MethodType
 from ..ui import UIFormGenerate
 from ..utils import smart_sort
 
@@ -28,6 +28,7 @@ class FormGenerate(QWidget, UIFormGenerate):
                 self.edit_perception.setText(','.join(items))
 
         self.button_edit_perception.clicked.connect(_edit_perception)
+        self.edit_perception.mouseDoubleClickEvent = MethodType(lambda s, e: _edit_perception(), self)
 
     def _init_lost_possibility(self):
         def _edit_lost_possibility():
@@ -39,6 +40,7 @@ class FormGenerate(QWidget, UIFormGenerate):
                 self.edit_lost_possibility.setText(','.join(items))
 
         self.button_edit_lost_possibility.clicked.connect(_edit_lost_possibility)
+        self.edit_lost_possibility.mouseDoubleClickEvent = MethodType(lambda s, e: _edit_lost_possibility(), self)
 
     @property
     def perceptions(self) -> List[str]:
