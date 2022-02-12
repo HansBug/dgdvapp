@@ -424,9 +424,9 @@ class FormGenerate(QWidget, UIFormGenerate):
                 self.label_status.setText(f'Completed.')
 
             g = _GenerateThread(self, generator)
-            g.init_table.connect(_init_table)
-            g.new_result.connect(_new_result)
-            g.completed.connect(_completed)
+            g.init_table.connect(_init_table, Qt.QueuedConnection)
+            g.new_result.connect(_new_result, Qt.QueuedConnection)
+            g.completed.connect(_completed, Qt.QueuedConnection)
             g.start()
 
         menu = QMenu(button)
