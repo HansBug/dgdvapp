@@ -1,3 +1,4 @@
+import csv
 import os
 from enum import IntEnum, unique
 from types import MethodType
@@ -5,7 +6,7 @@ from typing import List
 
 import qtawesome as qta
 from PyQt5.Qt import QWidget, QInputDialog, QToolButton, QMenu, QAction, QPoint, Qt, QMessageBox, QTableWidgetItem, \
-    QTableWidget, QThread, pyqtSignal
+    QTableWidget, QThread, pyqtSignal, QFileDialog
 from hbutils.model import int_enum_loads
 from hbutils.string import plural_word
 from hbutils.testing import AETGGenerator, MatrixGenerator, BaseGenerator
@@ -299,6 +300,34 @@ class FormGenerate(QWidget, UIFormGenerate):
         self._table_result_set_title(
             ['initial_num', 'loc_offset', 'loc_err', 'angle_err', 'perception', 'lost_possibility', 'control_num']
         )
+
+        def _export_to_csv():
+            filename_str, filename_ok = QFileDialog.getSaveFileName(self, 'Export Result to CSV', filter='*.csv')
+            if filename_ok:
+                n, m = table.rowCount(), table.columnCount()
+                data = [[table.horizontalHeaderItem(i).text() for i in range(m)]]
+                for i in range(n):
+                    data.append([table.item(i, j).text() for j in range(m)])
+
+                with open(filename_str, 'w', newline='') as csv_file:
+                    writer = csv.writer(csv_file)
+                    for line in data:
+                        writer.writerow(line)
+
+                QMessageBox.information(self, 'Export Result to CSV', f'Exported to {repr(filename_str)}.')
+
+        def _show_menu(curpos: QPoint):
+            menu = QMenu(table)
+
+            action_export = QAction(qta.icon('msc.export'), '&Export to csv', menu)
+            action_export.triggered.connect(_export_to_csv)
+            menu.addAction(action_export)
+
+            dest_point = table.mapToGlobal(curpos)
+            menu.exec_(dest_point)
+
+        table.setContextMenuPolicy(Qt.CustomContextMenu)
+        table.customContextMenuRequested.connect(_show_menu)
 
     def _init_button_generate(self):
         result: QTableWidget = self.table_result

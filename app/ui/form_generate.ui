@@ -280,12 +280,12 @@
     <rect>
      <x>20</x>
      <y>310</y>
-     <width>121</width>
+     <width>291</width>
      <height>17</height>
     </rect>
    </property>
    <property name="text">
-    <string>control_type</string>
+    <string>control_type (double click to edit)</string>
    </property>
   </widget>
   <widget class="QTableWidget" name="table_result">
