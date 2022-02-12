@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>662</width>
-    <height>475</height>
+    <width>784</width>
+    <height>529</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -182,19 +182,6 @@
     <string>perception</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="button_edit_perception">
-   <property name="geometry">
-    <rect>
-     <x>290</x>
-     <y>188</y>
-     <width>31</width>
-     <height>25</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>..</string>
-   </property>
-  </widget>
   <widget class="QLineEdit" name="edit_lost_possibility">
    <property name="geometry">
     <rect>
@@ -230,17 +217,75 @@
     <string>lost_possibility</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="button_edit_lost_possibility">
+  <widget class="QLineEdit" name="edit_control_num">
    <property name="geometry">
     <rect>
-     <x>290</x>
-     <y>230</y>
-     <width>31</width>
+     <x>150</x>
+     <y>268</y>
+     <width>171</width>
      <height>25</height>
     </rect>
    </property>
    <property name="text">
-    <string>..</string>
+    <string>0</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+   <property name="readOnly">
+    <bool>true</bool>
+   </property>
+   <property name="placeholderText">
+    <string>angle_err</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_control_num">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>270</y>
+     <width>121</width>
+     <height>17</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>control_num</string>
+   </property>
+  </widget>
+  <widget class="QTableWidget" name="table_control_type">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>331</y>
+     <width>301</width>
+     <height>171</height>
+    </rect>
+   </property>
+   <property name="columnCount">
+    <number>2</number>
+   </property>
+   <column>
+    <property name="text">
+     <string>time</string>
+    </property>
+   </column>
+   <column>
+    <property name="text">
+     <string>control</string>
+    </property>
+   </column>
+  </widget>
+  <widget class="QLabel" name="label_control_type">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>310</y>
+     <width>121</width>
+     <height>17</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>control_type</string>
    </property>
   </widget>
  </widget>
