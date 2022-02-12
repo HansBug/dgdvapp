@@ -1,13 +1,24 @@
 import os
+from enum import IntEnum, unique
 from types import MethodType
 from typing import List
 
 import qtawesome as qta
-from PyQt5.Qt import QWidget, QInputDialog, QToolButton, QMenu, QAction, QPoint, Qt, QMessageBox, QTableWidgetItem
+from PyQt5.Qt import QWidget, QInputDialog, QToolButton, QMenu, QAction, QPoint, Qt, QMessageBox, QTableWidgetItem, \
+    QTableWidget, QThread, pyqtSignal
+from hbutils.model import int_enum_loads
 from hbutils.string import plural_word
+from hbutils.testing import AETGGenerator, MatrixGenerator, BaseGenerator
 
 from ..ui import UIFormGenerate
 from ..utils import smart_sort
+
+
+@int_enum_loads(enable_int=False, name_preprocess=str.upper)
+@unique
+class GenerateMethod(IntEnum):
+    AETG = 1
+    MATRIX = 2
 
 
 class FormGenerate(QWidget, UIFormGenerate):
@@ -21,6 +32,8 @@ class FormGenerate(QWidget, UIFormGenerate):
         self._init_perception()
         self._init_lost_possibility()
         self._init_table_control_type()
+        self._init_table_result()
+        self._init_button_generate()
 
     def _init_perception(self):
         def _edit_perception():
@@ -191,7 +204,7 @@ class FormGenerate(QWidget, UIFormGenerate):
                     QMessageBox.Ok | QMessageBox.Cancel
             ) == QMessageBox.Ok:
                 data.clear()
-                table.clear()
+                table.setRowCount(0)
 
                 table.setProperty('data', data)
                 self.edit_control_num.setText(str(len(data)))
@@ -268,6 +281,136 @@ class FormGenerate(QWidget, UIFormGenerate):
             ]
         )
 
+    def _table_result_set_title(self, title: List[str]):
+        table: QTableWidget = self.table_result
+        table.setColumnCount(len(title))
+        for i, name in enumerate(title):
+            table.setHorizontalHeaderItem(i, QTableWidgetItem(name))
+
+    def _table_result_add_line(self, values):
+        table: QTableWidget = self.table_result
+        row_cnt = table.rowCount()
+        table.insertRow(row_cnt)
+        for i, value in enumerate(values):
+            table.setItem(row_cnt, i, QTableWidgetItem(str(value)))
+
+    def _init_table_result(self):
+        table: QTableWidget = self.table_result
+        self._table_result_set_title(
+            ['initial_num', 'loc_offset', 'loc_err', 'angle_err', 'perception', 'lost_possibility', 'control_num']
+        )
+
+    def _init_button_generate(self):
+        result: QTableWidget = self.table_result
+        button = self.button_generate
+
+        class _GenerateThread(QThread):
+            init_table = pyqtSignal(list)
+            new_result = pyqtSignal(int, tuple)
+            completed = pyqtSignal(int)
+
+            def __init__(self, parent, generator):
+                QThread.__init__(self, parent)
+                self.__generator: BaseGenerator = generator
+
+            def run(self) -> None:
+                self.init_table.emit(self.__generator.names)
+                cnt = 0
+                for p in self.__generator.tuple_cases():
+                    cnt += 1
+                    self.new_result.emit(cnt, p)
+
+                self.completed.emit(cnt)
+
+        def _generate(method):
+            method: GenerateMethod = GenerateMethod.loads(method)
+            table_title = ['initial_num', 'loc_offset', 'loc_err', 'angle_err',
+                           'perception', 'lost_possibility', 'control_num']
+            names = ['perception', 'lost_possibility', ]
+            time_names = []
+            control_names = []
+            values = {
+                'perception': self.perceptions,
+                'lost_possibility': self.lost_possibilities,
+            }
+            mappings = {}
+            for index, control_item in enumerate(self.control_items):
+                ctimes, ccontrols = control_item['time'], control_item['control']
+
+                name_time = f'name_{index}'
+                names.append(name_time)
+                time_names.append(name_time)
+                mappings[name_time] = {i: t for i, t in enumerate(ctimes)}
+                values[name_time] = tuple(mappings[name_time].keys())
+                table_title.append('time')
+
+                name_control = f'control_{index}'
+                control_names.append(name_control)
+                names.append(name_control)
+                mappings[name_control] = {i: t for i, t in enumerate(ccontrols)}
+                values[name_control] = tuple(mappings[name_control].keys())
+                table_title.append('gap')
+                table_title.append('type')
+                table_title.append('R1')
+                table_title.append('R2')
+                table_title.append('R3')
+
+            if method == GenerateMethod.AETG:
+                generator = AETGGenerator(
+                    values=values, names=names,
+                    pairs=[
+                        ('perception', 'lost_possibility'),
+                        tuple(time_names),
+                        tuple(control_names),
+                    ]
+                )
+            elif method == GenerateMethod.MATRIX:
+                generator = MatrixGenerator(
+                    values=values, names=names,
+                )
+            else:
+                raise ValueError(f'Invalid method - {repr(method)}.')
+
+            def _init_table(ns):
+                result.setRowCount(0)
+                self._table_result_set_title(table_title)
+                self.label_status.setText(f'Initialized...')
+
+            def _new_result(inx, pi):
+                vs = [
+                    self.initial_num, self.loc_offset, self.loc_err, self.angle_err,
+                    pi[0], pi[1], self.control_num,
+                ]
+                for i in range(2, len(pi), 2):
+                    tvalue = mappings[names[i]][pi[i]]
+                    cvalue = mappings[names[i + 1]][pi[i + 1]]
+                    vs.append(tvalue)
+                    vs += cvalue
+
+                self._table_result_add_line(vs)
+                self.label_status.setText(f'{plural_word(inx, "result")} generated...')
+
+            def _completed(cnt):
+                QMessageBox.information(self, 'Result Generation', f'{plural_word(cnt, "result")} generated!')
+                self.label_status.setText(f'Completed.')
+
+            g = _GenerateThread(self, generator)
+            g.init_table.connect(_init_table)
+            g.new_result.connect(_new_result)
+            g.completed.connect(_completed)
+            g.start()
+
+        menu = QMenu(button)
+        action_use_matrix = QAction("Use &Matrix Mode", menu)
+        action_use_matrix.triggered.connect(lambda: _generate(GenerateMethod.MATRIX))
+        menu.addAction(action_use_matrix)
+        action_use_matrix = QAction("Use &AETG Mode", menu)
+        action_use_matrix.triggered.connect(lambda: _generate(GenerateMethod.AETG))
+        menu.addAction(action_use_matrix)
+
+        self.button_generate.setMenu(menu)
+        self.button_generate.setPopupMode(QToolButton.ToolButtonPopupMode.InstantPopup)
+
     @property
     def initial_num(self) -> str:
         return self.edit_initial_num.text()
@@ -291,3 +434,11 @@ class FormGenerate(QWidget, UIFormGenerate):
     @property
     def lost_possibilities(self) -> List[str]:
         return smart_sort(filter(bool, map(str.strip, self.edit_lost_possibility.text().split(','))))
+
+    @property
+    def control_num(self) -> str:
+        return self.edit_control_num.text()
+
+    @property
+    def control_items(self) -> List:
+        return self.table_control_type.property('data')

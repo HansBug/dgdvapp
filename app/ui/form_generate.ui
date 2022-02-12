@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>784</width>
-    <height>529</height>
+    <width>1208</width>
+    <height>523</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -286,6 +286,83 @@
    </property>
    <property name="text">
     <string>control_type</string>
+   </property>
+  </widget>
+  <widget class="QTableWidget" name="table_result">
+   <property name="geometry">
+    <rect>
+     <x>340</x>
+     <y>30</y>
+     <width>851</width>
+     <height>441</height>
+    </rect>
+   </property>
+   <column>
+    <property name="text">
+     <string>initial_num</string>
+    </property>
+   </column>
+   <column>
+    <property name="text">
+     <string>loc_offset</string>
+    </property>
+   </column>
+   <column>
+    <property name="text">
+     <string>loc_err</string>
+    </property>
+   </column>
+   <column>
+    <property name="text">
+     <string>angle_err</string>
+    </property>
+   </column>
+   <column>
+    <property name="text">
+     <string>perception</string>
+    </property>
+   </column>
+   <column>
+    <property name="text">
+     <string>lost_possibility</string>
+    </property>
+   </column>
+   <column>
+    <property name="text">
+     <string>control_num</string>
+    </property>
+   </column>
+  </widget>
+  <widget class="QLabel" name="label_status">
+   <property name="geometry">
+    <rect>
+     <x>770</x>
+     <y>480</y>
+     <width>421</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Completed.</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+   </property>
+  </widget>
+  <widget class="QToolButton" name="button_generate">
+   <property name="geometry">
+    <rect>
+     <x>340</x>
+     <y>480</y>
+     <width>301</width>
+     <height>25</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Generate</string>
+   </property>
+   <property name="shortcut">
+    <string>Return</string>
    </property>
   </widget>
  </widget>
