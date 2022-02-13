@@ -43,7 +43,7 @@ ui:
 run: ui
 	$(PYTHON) "${ENTRY_PY}"
 build: ui
-	$(PYINSTALLER) -D -F -n app -w "${ENTRY_PY}"
+	$(PYINSTALLER) -F -n app -w "${ENTRY_PY}"
 clean:
 	rm -rf build dist app.spec
 	$(MAKE) -C "${SRC_UI_DIR}" clean
