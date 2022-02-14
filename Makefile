@@ -5,6 +5,7 @@ RM := rm -rf
 ZIP         ?= $(shell which zip)
 PYTHON      ?= $(shell which python)
 PYINSTALLER ?= $(shell which pyinstaller)
+PYTEST      ?= $(shell which pytest)
 
 DOC_DIR     := ./docs
 TEST_DIR    := ./test
@@ -28,7 +29,7 @@ STANDALONE_CMD ?= $(if ${STANDALONE},-F,-D)
 test: unittest
 
 unittest:
-	pytest "${RANGE_TEST_DIR}" \
+	$(PYTEST) "${RANGE_TEST_DIR}" \
 		-sv -m unittest \
 		$(shell for type in ${COV_TYPES}; do echo "--cov-report=$$type"; done) \
 		--cov="${RANGE_SRC_DIR}" \

@@ -26,6 +26,7 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y tree cloc wget curl make
           sudo apt-get install -y libegl1 libegl1-mesa libegl1-mesa-dev
+          sudo apt-get install -y libdbus-1-3 libxkbcommon-x11-0 libxcb-* xvfb
           sudo apt-get install -y libxml2-dev libxslt-dev python-dev  # need by pypy3
       - name: Set up python ${{ matrix.python-version }}
         uses: actions/setup-python@v2
@@ -52,7 +53,7 @@ jobs:
           CI: 'true'
           LINETRACE: 1
         run: |
-          make ui unittest
+          make ui unittest PYTEST="`which xvfb-run` `which pytest`"
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v1
         with:
