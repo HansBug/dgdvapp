@@ -75,6 +75,9 @@ jobs:
           - 'macos-10.15'
         python-version:
           - '3.6'
+        mode:
+          - 'directory'
+          - 'standalone'
 
     steps:
       - name: Get system version for linux
@@ -89,6 +92,19 @@ jobs:
         run: |
           echo "OS_NAME=Windows" >> $GITHUB_ENV
           echo "EXEC_SUFFIX=.exe" >> $GITHUB_ENV
+      - name: Get mode for directory
+        if: ${{ contains(matrix.mode, 'directory') }}
+        shell: bash
+        run: |
+          echo "RELEASE_SUFFIX=" >> $GITHUB_ENV
+          echo "STANDALONE=" >> $GITHUB_ENV
+          echo "EXEC_SUFFIX=.zip" >> $GITHUB_ENV
+      - name: Get mode for standalone
+        if: ${{ contains(matrix.mode, 'standalone') }}
+        shell: bash
+        run: |
+          echo "RELEASE_SUFFIX=-standalone" >> $GITHUB_ENV
+          echo "STANDALONE=1" >> $GITHUB_ENV
       - name: Get system version for macos
         if: ${{ contains(matrix.os, 'macos') }}
         shell: bash
@@ -144,17 +160,15 @@ jobs:
           echo "GIT_COMMIT_ID=$(echo ${GITHUB_SHA} | cut -c1-7)" >> $GITHUB_ENV
           echo "PYTHON_VERSION=$(python -V | xargs -n 1 | tail -1)" >> $GITHUB_ENV
           echo "CPU_ARCH=$(uname -m)" >> $GITHUB_ENV
-      - name: Get CLI name
-        shell: bash
-        run: |
-          echo "CLI_NAME=${{ env.APP_NAME }}-v${{ env.PACKAGE_VERSION }}-${{ env.OS_NAME }}-${{ env.CPU_ARCH }}" >> $GITHUB_ENV
       - name: Build standalone cli
         shell: bash
+        env:
+          STANDALONE: ${{ env.STANDALONE }}
         run: |
           make build
           ls -al dist
       - name: Upload executable files to artifacts
         uses: actions/upload-artifact@v2
         with:
-          name: ${{ env.APP_NAME }}-v${{ env.PACKAGE_VERSION }}-${{ env.OS_NAME }}-${{ env.CPU_ARCH }}-${{ env.GIT_COMMIT_ID }}
+          name: ${{ env.APP_NAME }}-v${{ env.PACKAGE_VERSION }}-${{ env.OS_NAME }}-${{ env.CPU_ARCH }}-${{ env.GIT_COMMIT_ID }}${{ env.RELEASE_SUFFIX }}
           path: dist/app${{ env.EXEC_SUFFIX }}
