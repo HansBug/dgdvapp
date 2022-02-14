@@ -1,5 +1,6 @@
 .PHONY: test unittest run_dev docs pdocs ui run build clean
 
+ZIP         ?= $(shell which zip)
 PYTHON      ?= $(shell which python)
 PYINSTALLER ?= $(shell which pyinstaller)
 
@@ -7,6 +8,8 @@ DOC_DIR     := ./docs
 TEST_DIR    := ./test
 SRC_DIR     := ./app
 SRC_UI_DIR  := ${SRC_DIR}/ui
+BUILD_DIR   := ./build
+DIST_DIR    := ./dist
 ENTRY_PY    := ./main.py
 
 RANGE_DIR      ?= .
@@ -16,6 +19,9 @@ RANGE_SRC_DIR  := ${SRC_DIR}/${RANGE_DIR}
 IMAGE_DEV   ?= python:3.6.3
 IMAGE_SHELL ?= /bin/bash
 COV_TYPES   ?= xml term-missing
+
+STANDALONE  ?=
+STANDALONE_CMD ?= $(if ${STANDALONE},-F,-D)
 
 test: unittest
 
@@ -43,7 +49,12 @@ ui:
 run: ui
 	$(PYTHON) "${ENTRY_PY}"
 build: ui
-	$(PYINSTALLER) -F -n app -w "${ENTRY_PY}"
+	$(PYINSTALLER) ${STANDALONE_CMD} -n app -w "${ENTRY_PY}"
+	if [ -z ${STANDALONE} ]; then \
+  		cd "${DIST_DIR}" && \
+		$(ZIP) -r app.zip app && \
+		cd ..; \
+	fi
 clean:
-	rm -rf build dist app.spec
+	rm -rf "${BUILD_DIR}" "${DIST_DIR}" app.spec
 	$(MAKE) -C "${SRC_UI_DIR}" clean
