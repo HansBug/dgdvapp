@@ -1,5 +1,7 @@
 .PHONY: test unittest run_dev docs pdocs ui run build clean
 
+RM := rm -rf
+
 ZIP         ?= $(shell which zip)
 PYTHON      ?= $(shell which python)
 PYINSTALLER ?= $(shell which pyinstaller)
@@ -56,5 +58,5 @@ build: ui
 		cd ..; \
 	fi
 clean:
-	rm -rf "${BUILD_DIR}" "${DIST_DIR}" app.spec
+	$(RM) "${BUILD_DIR}" "${DIST_DIR}" app.spec
 	$(MAKE) -C "${SRC_UI_DIR}" clean
