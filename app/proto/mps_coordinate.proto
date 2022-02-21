@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+package MpsSimu;
+
+option cc_enable_arenas = true;
+
+message MpsProtoHead {
+  double time = 1;  // simu time, seconds
+  uint32 id = 2;    // id of entity
+  uint32 type = 3;  // type of entity
+  double lng = 4;   // longitude, deg
+  double lat = 5;   // latitude, deg
+  float h = 6;      // height, m
+}
+
+message MpsProtoAircraft {
+  MpsProtoHead head = 1;
+  float roll = 2;   // NED, roll, deg
+  float pitch = 3;  // pitch, deg
+  float yaw = 4;    // yaw, deg
+  float speed = 5;  // speed, m/s
+  float remain = 6; // remain fuel, kg
+}
+
+
+
+

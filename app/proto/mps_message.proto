@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package MpsMsg;
+
+option cc_enable_arenas = true;
+
+message MpsMsgHead{
+  uint32 swarmsize = 1;
+}
+
+message MpsMsgInfo{
+  uint32 sendID = 1;
+  uint32 msgtype = 2;
+}
+
+message MpsReceiveMsg {
+  double time = 1;  // simu time, seconds
+  uint32 receiveID = 2;    // id of entity
+  repeated MpsMsgInfo msginfo = 3;//received msgs
+}

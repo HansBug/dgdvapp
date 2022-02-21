@@ -1,0 +1,36 @@
+syntax = "proto3";
+
+package MpsEval;
+
+option cc_enable_arenas = true;
+
+message MpsProtoData {
+  double time = 1;  // simu time, seconds
+  uint32 id = 2;    // id of entity
+  uint32 type = 3;  // type of entity
+  double lng = 4;   // longitude, deg
+  double lat = 5;   // latitude, deg
+  float h = 6;      // height, m
+}
+
+message MpsGapTimeNode {
+  double gap = 1;
+  double timenode = 2;
+}
+
+message MpsWayPoint {
+  double x = 1;
+  double y = 2;
+  double z = 3;
+  double time = 4;
+}
+
+message MpsHead {
+  uint32 simunum = 1; 
+  uint32 swarmsize = 2;    
+  float timestep = 3;  
+  float time = 4;
+  double safespace = 5;
+  repeated MpsWayPoint wayPoints = 6;
+  repeated MpsGapTimeNode gaptimenodes = 7;
+}

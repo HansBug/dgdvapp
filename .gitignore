@@ -1212,3 +1212,5 @@ fabric.properties
 !/runs/artifacts
 /runs/artifacts/*
 /app/ui/*_ui.py
+/app/proto/*_pb2.py
+/demo

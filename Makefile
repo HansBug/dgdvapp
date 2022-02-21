@@ -7,13 +7,14 @@ PYTHON      ?= $(shell which python)
 PYINSTALLER ?= $(shell which pyinstaller)
 PYTEST      ?= $(shell which pytest)
 
-DOC_DIR     := ./docs
-TEST_DIR    := ./test
-SRC_DIR     := ./app
-SRC_UI_DIR  := ${SRC_DIR}/ui
-BUILD_DIR   := ./build
-DIST_DIR    := ./dist
-ENTRY_PY    := ./main.py
+DOC_DIR       := ./docs
+TEST_DIR      := ./test
+SRC_DIR       := ./app
+SRC_UI_DIR    := ${SRC_DIR}/ui
+SRC_PROTO_DIR := ${SRC_DIR}/proto
+BUILD_DIR     := ./build
+DIST_DIR      := ./dist
+ENTRY_PY      := ./main.py
 
 RANGE_DIR      ?= .
 RANGE_TEST_DIR := ${TEST_DIR}/${RANGE_DIR}
@@ -49,9 +50,11 @@ pdocs:
 
 ui:
 	$(MAKE) -C "${SRC_UI_DIR}" build
-run: ui
+proto:
+	$(MAKE) -C "${SRC_PROTO_DIR}" build
+run: ui proto
 	$(PYTHON) "${ENTRY_PY}"
-build: ui
+build: ui proto
 	$(PYINSTALLER) ${STANDALONE_CMD} -n app -w "${ENTRY_PY}"
 	if [ -z ${STANDALONE} ]; then \
   		cd "${DIST_DIR}" && \
@@ -61,3 +64,4 @@ build: ui
 clean:
 	$(RM) "${BUILD_DIR}" "${DIST_DIR}" app.spec
 	$(MAKE) -C "${SRC_UI_DIR}" clean
+	$(MAKE) -C "${SRC_PROTO_DIR}" clean
