@@ -64,15 +64,16 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y tree cloc wget curl make zip
           sudo apt-get install -y libegl1 libegl1-mesa libegl1-mesa-dev
+          sudo apt-get install -y protobuf-compiler
           sudo apt-get install -y libxml2-dev libxslt-dev python-dev  # need by pypy3
       - name: Set up system dependences on windows
         if: ${{ env.OS_NAME == 'Windows' }}
         run: |
-          choco install tree cloc wget curl make zip
+          choco install tree cloc wget curl make zip protoc
       - name: Set up system dependences on macos
         if: ${{ env.OS_NAME == 'MacOS' }}
         run: |
-          brew install tree cloc wget curl make zip
+          brew install tree cloc wget curl make zip protobuf
       - name: Set up python ${{ matrix.python-version }}
         uses: actions/setup-python@v2
         with:
@@ -112,7 +113,7 @@ jobs:
         env:
           STANDALONE: ${{ env.STANDALONE }}
         run: |
-          make ui build
+          make ui proto build
           ls -al dist
       - name: Upload executable files to artifacts
         uses: svenstaro/upload-release-action@v2
