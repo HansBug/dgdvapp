@@ -4,6 +4,7 @@ import os
 import pandas as pd
 
 from app.proto import MpsProtoAircraft
+from .trans import epsg4326_to_3857
 
 
 def find_simudata_in_directory(directory: str):
@@ -40,7 +41,9 @@ def simudata_process(src_file: str, dst_file: str, force: bool = False):
             'roll': [],
             'pitch': [],
             'yaw': [],
-            'speed': []
+            'speed': [],
+            'x': [],
+            'y': [],
         }
         while index < len(con):
             cur = index
@@ -69,6 +72,12 @@ def simudata_process(src_file: str, dst_file: str, force: bool = False):
                 data['pitch'].append(mpa.pitch)
                 data['yaw'].append(mpa.yaw)
                 data['speed'].append(mpa.speed)
+
+                lng, lat = mpa.head.lng, mpa.head.lat
+                x, y = epsg4326_to_3857(lng, lat)
+                data['x'].append(x)
+                data['y'].append(y)
+
             index = cur + 1 + final_length + 1
 
         df = pd.DataFrame(data)
