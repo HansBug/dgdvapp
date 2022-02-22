@@ -9,24 +9,25 @@ from app.proto import MpsProtoData
 def find_expdata_in_directory(directory: str):
     matchings = glob.glob1(directory, 'expdata_*')
     if matchings:
-        return matchings[0]
+        return os.path.join(directory, matchings[0])
     else:
         raise FileNotFoundError(f'No expdata file found in {repr(directory)}.')
 
 
+def exp_center_file_in_directory(directory: str) -> str:
+    return os.path.join(directory, 'exp_center.csv')
+
+
 def exp_center_process_in_directory(directory: str, force: bool = False):
     return exp_center_process(
-        os.path.join(directory, find_expdata_in_directory(directory)),
-        os.path.join(directory, 'exp_center.csv'),
+        find_expdata_in_directory(directory),
+        exp_center_file_in_directory(directory),
         force=force,
     )
 
 
-def exp_center_process(src_file: str, dst_file: str, force: bool = False):
+def exp_center_trans(src_file: str) -> pd.DataFrame:
     mpd = MpsProtoData()
-    if not force and os.path.exists(dst_file):
-        return
-
     with open(src_file, 'rb') as f:
         con = f.read()
         index = 0
@@ -65,5 +66,13 @@ def exp_center_process(src_file: str, dst_file: str, force: bool = False):
                     data['lat'].append(mpd.lat)
                     data['height'].append(mpd.h)
             index = cur + 1 + final_length
-        df = pd.DataFrame(data)
-        df.to_csv(dst_file)
+
+        return pd.DataFrame(data)
+
+
+def exp_center_process(src_file: str, dst_file: str, force: bool = False):
+    if not force and os.path.exists(dst_file):
+        return
+
+    df = exp_center_trans(src_file)
+    df.to_csv(dst_file)

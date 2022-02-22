@@ -1,33 +1,42 @@
 import os
 from operator import itemgetter
+from typing import Tuple, Iterator
 
 import numpy as np
 import pandas as pd
 
-from .exp_center import exp_center_process, find_expdata_in_directory
-from .simudata import simudata_process, find_simudata_in_directory
+from .exp_center import find_expdata_in_directory, exp_center_file_in_directory, exp_center_trans
+from .simudata import find_simudata_in_directory, simudata_file_in_directory, simudata_trans
 
 
-def log_process(directory: str, force: bool = False):
-    simudata_file = os.path.join(directory, 'simudata.csv')
-    exp_center_file = os.path.join(directory, 'exp_center.csv')
-    if not force and os.path.exists(simudata_file) and os.path.exists(exp_center_file):
-        return
+def is_log_directory(directory: str) -> bool:
+    try:
+        find_simudata_in_directory(directory)
+        find_expdata_in_directory(directory)
+    except FileNotFoundError:
+        return False
+    else:
+        return True
 
-    simudata_process(
-        os.path.join(directory, find_simudata_in_directory(directory)),
-        simudata_file, force=force,
-    )
-    exp_center_process(
-        os.path.join(directory, find_expdata_in_directory(directory)),
-        exp_center_file, force=force,
-    )
 
-    simudata_pd = pd.read_csv(simudata_file)
-    exp_center_pd = pd.read_csv(exp_center_file)
+def walk_log_directories(root: str) -> Iterator[str]:
+    def _recursion(r: str, levels) -> Iterator[str]:
+        for file in os.listdir(r):
+            if os.path.isdir(file):
+                if is_log_directory(file):
+                    yield os.path.join(*levels, file)
+
+                yield from _recursion(os.path.join(root, file), (*levels, file))
+
+    yield from _recursion(root, ())
+
+
+def log_trans(directory: str) -> Tuple[pd.DataFrame, pd.DataFrame]:
+    simudata_df = simudata_trans(find_simudata_in_directory(directory))
+    exp_center_df = exp_center_trans(find_expdata_in_directory(directory))
 
     records = {}
-    for lineno, row in simudata_pd.iterrows():
+    for lineno, row in simudata_df.iterrows():
         time_ = row['time']
         x, y = row['x'], row['y']
         height = row['height']
@@ -43,14 +52,26 @@ def log_process(directory: str, force: bool = False):
         means[time_] = (np.mean(x_array), np.mean(y_array), np.mean(h_array))
 
     xs, ys, hs = [], [], []
-    for lineno, row in exp_center_pd.iterrows():
+    for lineno, row in exp_center_df.iterrows():
         time_ = row['time']
         rx, ry, rh = means.get(time_, (-1, -1, -1))
         xs.append(rx)
         ys.append(ry)
         hs.append(rh)
 
-    exp_center_pd['r_x'] = xs
-    exp_center_pd['r_y'] = ys
-    exp_center_pd['r_h'] = hs
+    exp_center_df['r_x'] = xs
+    exp_center_df['r_y'] = ys
+    exp_center_df['r_h'] = hs
+
+    return simudata_df, exp_center_df
+
+
+def log_process(directory: str, force: bool = False):
+    simudata_file = simudata_file_in_directory(directory)
+    exp_center_file = exp_center_file_in_directory(directory)
+    if not force and os.path.exists(simudata_file) and os.path.exists(exp_center_file):
+        return
+
+    simudata_pd, exp_center_pd = log_trans(directory)
+    simudata_pd.to_csv(simudata_file)
     exp_center_pd.to_csv(exp_center_file)

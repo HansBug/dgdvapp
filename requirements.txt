@@ -6,3 +6,4 @@ qtawesome>=1.1.1
 protobuf>=3.19.0
 pandas>=1.1.5
 pyproj>=3.0.0
+numpy>=1.18

@@ -10,24 +10,25 @@ from .trans import epsg4326_to_3857
 def find_simudata_in_directory(directory: str):
     matchings = glob.glob1(directory, 'simudata_*')
     if matchings:
-        return matchings[0]
+        return os.path.join(directory, matchings[0])
     else:
         raise FileNotFoundError(f'No simudata file found in {repr(directory)}.')
 
 
+def simudata_file_in_directory(directory: str) -> str:
+    return os.path.join(directory, 'simudata.csv')
+
+
 def simudata_process_in_directory(directory: str, force: bool = False):
     return simudata_process(
-        os.path.join(directory, find_simudata_in_directory(directory)),
-        os.path.join(directory, 'simudata.csv'),
+        find_simudata_in_directory(directory),
+        simudata_file_in_directory(directory),
         force=force,
     )
 
 
-def simudata_process(src_file: str, dst_file: str, force: bool = False):
+def simudata_trans(src_file: str) -> pd.DataFrame:
     mpa = MpsProtoAircraft()
-    if not force and os.path.exists(dst_file):
-        return
-
     with open(src_file, 'rb') as f:
         con = f.read()
         index = 1
@@ -80,5 +81,12 @@ def simudata_process(src_file: str, dst_file: str, force: bool = False):
 
             index = cur + 1 + final_length + 1
 
-        df = pd.DataFrame(data)
-        df.to_csv(dst_file)
+        return pd.DataFrame(data)
+
+
+def simudata_process(src_file: str, dst_file: str, force: bool = False):
+    if not force and os.path.exists(dst_file):
+        return
+
+    df = simudata_trans(src_file)
+    df.to_csv(dst_file)
