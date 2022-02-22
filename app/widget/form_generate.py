@@ -303,6 +303,7 @@ class FormGenerate(QWidget, UIFormGenerate):
 
     def _init_table_result(self):
         table: QTableWidget = self.table_result
+        table.setSortingEnabled(True)
         self._table_result_set_title(
             ['initial_num', 'loc_offset', 'loc_err', 'angle_err', 'perception', 'lost_possibility', 'control_num']
         )
