@@ -10,9 +10,9 @@ from PyQt5.Qt import QWidget, QInputDialog, QToolButton, QMenu, QAction, QPoint,
 from hbutils.model import int_enum_loads
 from hbutils.string import plural_word
 from hbutils.testing import AETGGenerator, MatrixGenerator, BaseGenerator
+from natsort import natsorted
 
 from ..ui import UIFormGenerate
-from ..utils import smart_sort
 
 
 @int_enum_loads(enable_int=False, name_preprocess=str.upper)
@@ -42,7 +42,7 @@ class FormGenerate(QWidget, UIFormGenerate):
             result_str, result_ok = QInputDialog.getMultiLineText(self, 'Edit Perceptions', 'Update new perceptions:',
                                                                   os.linesep.join(current_items))
             if result_ok:
-                items = smart_sort(filter(bool, map(str.strip, result_str.splitlines())))
+                items = natsorted(filter(bool, map(str.strip, result_str.splitlines())))
                 self.edit_perception.setText(','.join(items))
 
         _button_edit = QToolButton(self)
@@ -59,7 +59,7 @@ class FormGenerate(QWidget, UIFormGenerate):
             result_str, result_ok = QInputDialog.getMultiLineText(
                 self, 'Edit Lost Possibilities', 'Update new lost_possibilities:', os.linesep.join(current_items))
             if result_ok:
-                items = smart_sort(filter(bool, map(str.strip, result_str.splitlines())))
+                items = natsorted(filter(bool, map(str.strip, result_str.splitlines())))
                 self.edit_lost_possibility.setText(','.join(items))
 
         _button_edit = QToolButton(self)
@@ -85,7 +85,7 @@ class FormGenerate(QWidget, UIFormGenerate):
             )
 
             if time_ok:
-                time_items = smart_sort(set(filter(bool, map(str.strip, time_str.splitlines()))))
+                time_items = natsorted(set(filter(bool, map(str.strip, time_str.splitlines()))))
 
                 ti_time = QTableWidgetItem(','.join(map(str, time_items)))
                 ti_time.setFlags(Qt.ItemIsEnabled)
@@ -161,7 +161,7 @@ class FormGenerate(QWidget, UIFormGenerate):
         def _add_new_item():
             time_str, time_ok = QInputDialog.getMultiLineText(self, 'Add Control Item', 'Input the times of control:')
             if time_ok:
-                time_items = smart_sort(set(filter(bool, map(str.strip, time_str.splitlines()))))
+                time_items = natsorted(set(filter(bool, map(str.strip, time_str.splitlines()))))
                 control_str, control_ok = QInputDialog.getMultiLineText(
                     self, 'Add Control Item',
                     'Input the control items (gap,type,R1,R2,R3):'
@@ -458,11 +458,11 @@ class FormGenerate(QWidget, UIFormGenerate):
 
     @property
     def perceptions(self) -> List[str]:
-        return smart_sort(filter(bool, map(str.strip, self.edit_perception.text().split(','))))
+        return natsorted(filter(bool, map(str.strip, self.edit_perception.text().split(','))))
 
     @property
     def lost_possibilities(self) -> List[str]:
-        return smart_sort(filter(bool, map(str.strip, self.edit_lost_possibility.text().split(','))))
+        return natsorted(filter(bool, map(str.strip, self.edit_lost_possibility.text().split(','))))
 
     @property
     def control_num(self) -> str:
