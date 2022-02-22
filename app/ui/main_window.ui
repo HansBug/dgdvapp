@@ -43,7 +43,9 @@
     </property>
     <addaction name="action_data_generation"/>
     <addaction name="separator"/>
+    <addaction name="action_log_processing"/>
     <addaction name="action_result_metrics"/>
+    <addaction name="separator"/>
     <addaction name="action_data_visualization"/>
    </widget>
    <widget class="QMenu" name="menu_About">
@@ -79,6 +81,11 @@
   <action name="action_result_metrics">
    <property name="text">
     <string>Result &amp;Metrics</string>
+   </property>
+  </action>
+  <action name="action_log_processing">
+   <property name="text">
+    <string>&amp;Log Processing</string>
    </property>
   </action>
  </widget>

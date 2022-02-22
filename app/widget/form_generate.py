@@ -6,7 +6,7 @@ from typing import List
 
 import qtawesome as qta
 from PyQt5.Qt import QWidget, QInputDialog, QToolButton, QMenu, QAction, QPoint, Qt, QMessageBox, QTableWidgetItem, \
-    QTableWidget, QThread, pyqtSignal, QFileDialog
+    QTableWidget, QThread, pyqtSignal, QFileDialog, QHeaderView
 from hbutils.model import int_enum_loads
 from hbutils.string import plural_word
 from hbutils.testing import AETGGenerator, MatrixGenerator, BaseGenerator
@@ -80,6 +80,7 @@ class FormGenerate(QWidget, UIFormGenerate):
         table = self.table_control_type
         table.setColumnCount(2)
         table.setProperty('data', [])
+        table.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
 
         def _edit_item_time(row):
             data: list = table.property('data')

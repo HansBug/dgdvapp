@@ -20,15 +20,9 @@ def is_log_directory(directory: str) -> bool:
 
 
 def walk_log_directories(root: str) -> Iterator[str]:
-    def _recursion(r: str, levels) -> Iterator[str]:
-        for file in os.listdir(r):
-            if os.path.isdir(file):
-                if is_log_directory(file):
-                    yield os.path.join(*levels, file)
-
-                yield from _recursion(os.path.join(root, file), (*levels, file))
-
-    yield from _recursion(root, ())
+    for directory, _, _ in os.walk(root, followlinks=True):
+        if is_log_directory(directory):
+            yield directory
 
 
 def log_trans(directory: str) -> Tuple[pd.DataFrame, pd.DataFrame]:
