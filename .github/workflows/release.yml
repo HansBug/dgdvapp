@@ -94,7 +94,7 @@ jobs:
       - name: Build UI files
         shell: bash
         run: |
-          make ui
+          make ui proto
       - name: Get package version
         shell: bash
         run: |
