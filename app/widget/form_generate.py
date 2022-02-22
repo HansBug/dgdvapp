@@ -26,15 +26,20 @@ class FormGenerate(QWidget, UIFormGenerate):
     def __init__(self):
         QWidget.__init__(self)
         self.setupUi(self)
-        self.setFixedSize(self.width(), self.height())
         self._init()
 
     def _init(self):
+        self._init_window_size()
         self._init_perception()
         self._init_lost_possibility()
         self._init_table_control_type()
         self._init_table_result()
         self._init_button_generate()
+
+    def _init_window_size(self):
+        self.setFixedSize(self.width(), self.height())
+        self.setMaximumSize(self.width(), self.height())
+        self.setWindowFlags(self.windowFlags() & ~Qt.WindowMaximizeButtonHint)
 
     def _init_perception(self):
         def _edit_perception():

@@ -1,7 +1,7 @@
 import sys
 
 from PyQt5 import QtGui
-from PyQt5.Qt import QMainWindow
+from PyQt5.Qt import QMainWindow, Qt
 
 from .dialog_config import DialogConfig
 from .form_generate import FormGenerate
@@ -22,8 +22,11 @@ class AppMainWindow(QMainWindow, UIMainWindow):
     def _init_open_generate(self):
         def _show_form():
             form = FormGenerate()
-            self.mdi_area.addSubWindow(form)
-            form.show()
+            sub_window = self.mdi_area.addSubWindow(form)
+            sub_window.setFixedSize(sub_window.width(), sub_window.height())
+            sub_window.setMaximumSize(sub_window.width(), sub_window.height())
+            sub_window.setWindowFlags(sub_window.windowFlags() & ~Qt.WindowMaximizeButtonHint)
+            sub_window.show()
 
         self.action_data_generation.triggered.connect(_show_form)
 
