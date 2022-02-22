@@ -12,24 +12,26 @@ class AppMainWindow(QMainWindow, UIMainWindow):
     def __init__(self):
         QMainWindow.__init__(self)
         self.setupUi(self)
-        self.setFixedSize(self.width(), self.height())
         self._init()
 
     def _init(self):
         self._init_this_application()
         self._init_open_generate()
+        self._init_mdi_area()
 
     def _init_open_generate(self):
-        form = FormGenerate()
-
         def _show_form():
+            form = FormGenerate()
+            self.mdi_area.addSubWindow(form)
             form.show()
 
-        self.button_datagene.clicked.connect(_show_form)
         self.action_data_generation.triggered.connect(_show_form)
 
     def _init_this_application(self):
         self.action_application.triggered.connect(self._event_open_dialog_config)
+
+    def _init_mdi_area(self):
+        self.setCentralWidget(self.mdi_area)
 
     def _event_open_dialog_config(self):
         dialog = DialogConfig(self)

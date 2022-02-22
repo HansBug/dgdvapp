@@ -6,25 +6,25 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>282</width>
-    <height>188</height>
+    <width>1080</width>
+    <height>512</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Generation &amp; Visualization</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QPushButton" name="button_datagene">
+   <widget class="QMdiArea" name="mdi_area">
     <property name="geometry">
      <rect>
-      <x>60</x>
-      <y>50</y>
-      <width>171</width>
-      <height>25</height>
+      <x>9</x>
+      <y>69</y>
+      <width>881</width>
+      <height>471</height>
      </rect>
     </property>
-    <property name="text">
-     <string>Data &amp;Generation</string>
+    <property name="viewMode">
+     <enum>QMdiArea::SubWindowView</enum>
     </property>
    </widget>
   </widget>
@@ -33,7 +33,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>282</width>
+     <width>1080</width>
      <height>28</height>
     </rect>
    </property>
@@ -43,6 +43,7 @@
     </property>
     <addaction name="action_data_generation"/>
     <addaction name="separator"/>
+    <addaction name="action_result_metrics"/>
     <addaction name="action_data_visualization"/>
    </widget>
    <widget class="QMenu" name="menu_About">
@@ -73,6 +74,11 @@
   <action name="action_data_visualization">
    <property name="text">
     <string>Data &amp;Visualization</string>
+   </property>
+  </action>
+  <action name="action_result_metrics">
+   <property name="text">
+    <string>Result &amp;Metrics</string>
    </property>
   </action>
  </widget>
