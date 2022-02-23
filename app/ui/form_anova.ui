@@ -55,7 +55,7 @@
       <string>Ctrl+O</string>
      </property>
     </widget>
-    <widget class="QTableView" name="table_dependents">
+    <widget class="QTableView" name="table_independents">
      <property name="geometry">
       <rect>
        <x>660</x>
@@ -90,7 +90,7 @@
       <bool>false</bool>
      </property>
     </widget>
-    <widget class="QTableView" name="table_independents">
+    <widget class="QTableView" name="table_dependents">
      <property name="geometry">
       <rect>
        <x>660</x>
@@ -101,6 +101,9 @@
      </property>
     </widget>
     <widget class="QPushButton" name="button_ind_add">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
      <property name="geometry">
       <rect>
        <x>930</x>
@@ -114,6 +117,9 @@
      </property>
     </widget>
     <widget class="QPushButton" name="button_ind_del">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
      <property name="geometry">
       <rect>
        <x>930</x>
@@ -127,6 +133,9 @@
      </property>
     </widget>
     <widget class="QPushButton" name="button_ind_clear">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
      <property name="geometry">
       <rect>
        <x>930</x>
