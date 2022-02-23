@@ -4,6 +4,7 @@ from PyQt5 import QtGui
 from PyQt5.Qt import QMainWindow, Qt
 
 from .dialog_config import DialogConfig
+from .form_anova import FormANOVA
 from .form_generate import FormGenerate
 from .form_log_process import FormLogProcess
 from .form_metrics import FormMetrics
@@ -24,6 +25,7 @@ class AppMainWindow(QMainWindow, UIMainWindow):
         self._init_open_log_process()
         self._init_open_metrics()
         self._init_open_spearman()
+        self._init_open_anova()
 
     def _init_open_generate(self):
         # noinspection DuplicatedCode
@@ -72,6 +74,18 @@ class AppMainWindow(QMainWindow, UIMainWindow):
             sub_window.show()
 
         self.action_spearman.triggered.connect(_show_form)
+
+    def _init_open_anova(self):
+        # noinspection DuplicatedCode
+        def _show_form():
+            form = FormANOVA()
+            sub_window = self.mdi_area.addSubWindow(form)
+            sub_window.setFixedSize(sub_window.width(), sub_window.height())
+            sub_window.setMaximumSize(sub_window.width(), sub_window.height())
+            sub_window.setWindowFlags(sub_window.windowFlags() & ~Qt.WindowMaximizeButtonHint)
+            sub_window.show()
+
+        self.action_anova.triggered.connect(_show_form)
 
     def _init_this_application(self):
         self.action_application.triggered.connect(self._event_open_dialog_config)

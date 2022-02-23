@@ -40,10 +40,10 @@ class FormSpearmanr(QWidget, UIFormSpearmanr):
 
     def _init_open_csv(self):
         def _open():
-            filename_str, filename_ok = QFileDialog.getOpenFileName(
+            filename, _ = QFileDialog.getOpenFileName(
                 self, 'Load Data', filter='*.csv', initialFilter='*.csv')
-            if filename_ok:
-                df = pd.read_csv(filename_str)
+            if filename:
+                df = pd.read_csv(filename)
 
                 n = len(df)
                 names = [name for name in df.columns]
