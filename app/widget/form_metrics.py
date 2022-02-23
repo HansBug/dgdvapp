@@ -1,7 +1,10 @@
 import csv
 import os
+from types import MethodType
+from typing import List
 
-from PyQt5.Qt import QWidget, Qt, QStandardItemModel, QFileDialog, QStandardItem, QMessageBox, QThread, pyqtSignal
+from PyQt5.Qt import QWidget, Qt, QStandardItemModel, QFileDialog, QStandardItem, QMessageBox, QThread, pyqtSignal, \
+    QListWidgetItem, QListWidget
 
 from .models import ProcessingStatus
 from ..process import METRICS_LIST, walk_log_directories, get_all_metrics
@@ -16,6 +19,7 @@ class FormMetrics(QWidget, UIFormMetrics):
 
     def _init(self):
         self._init_window_size()
+        self._init_list_metrics()
         self._init_table()
         self._init_open_dialog()
         self._init_start()
@@ -26,11 +30,29 @@ class FormMetrics(QWidget, UIFormMetrics):
         self.setMaximumSize(self.width(), self.height())
         self.setWindowFlags(self.windowFlags() & ~Qt.WindowMaximizeButtonHint)
 
+    def _init_list_metrics(self):
+        for name in METRICS_LIST:
+            item = QListWidgetItem(self.list_metrics)
+            item.setText(name)
+            item.setCheckState(Qt.Checked)
+
+        def _get_enabled_metrics(self_: QListWidget) -> List[str]:
+            metrics = []
+            for i in range(self_.count()):
+                item_ = self_.item(i)
+                if item_.checkState() == Qt.Checked:
+                    metrics.append(item_.text())
+
+            return metrics
+
+        self.list_metrics.get_enabled_metrics = MethodType(_get_enabled_metrics, self.list_metrics)
+
     def _init_table(self):
         self.table_result.setSortingEnabled(True)
 
-        model = QStandardItemModel(0, len(METRICS_LIST) + 2)
-        model.setHorizontalHeaderLabels(['Path', 'Status', *METRICS_LIST])
+        metrics = self.list_metrics.get_enabled_metrics()
+        model = QStandardItemModel(0, len(metrics) + 2)
+        model.setHorizontalHeaderLabels(['Path', 'Status', *metrics])
         self.table_result.setModel(model)
 
     def _init_open_dialog(self):
@@ -43,8 +65,9 @@ class FormMetrics(QWidget, UIFormMetrics):
 
                 try:
                     self.label_path.setText(directory)
-                    model = QStandardItemModel(0, len(METRICS_LIST) + 2)
-                    model.setHorizontalHeaderLabels(['Path', 'Status', *METRICS_LIST])
+                    metrics = self.list_metrics.get_enabled_metrics()
+                    model = QStandardItemModel(0, len(metrics) + 2)
+                    model.setHorizontalHeaderLabels(['Path', 'Status', *metrics])
 
                     cnt = 0
                     for p in walk_log_directories(directory):
@@ -78,11 +101,13 @@ class FormMetrics(QWidget, UIFormMetrics):
             after_loop = pyqtSignal(int, int, QStandardItemModel, dict)
             deinit = pyqtSignal(int)
 
-            def __init__(self, parent, directory: str, total_count: int, model: QStandardItemModel):
+            def __init__(self, parent, directory: str, total_count: int,
+                         model: QStandardItemModel, metrics: List[str]):
                 QThread.__init__(self, parent)
                 self.directory = directory
                 self.total_count = total_count
                 self.model = model
+                self.metrics = metrics
 
             def run(self) -> None:
                 self.init.emit(self.total_count, self.model)
@@ -90,7 +115,7 @@ class FormMetrics(QWidget, UIFormMetrics):
                     self.before_loop.emit(i, self.total_count, self.model)
 
                     relpath = self.model.item(i, 0).text()
-                    result = get_all_metrics(os.path.join(self.directory, relpath))
+                    result = get_all_metrics(os.path.join(self.directory, relpath), metrics=self.metrics)
 
                     self.after_loop.emit(i, self.total_count, self.model, result)
 
@@ -125,7 +150,8 @@ class FormMetrics(QWidget, UIFormMetrics):
             model.setItem(i, 1, status)
             self.progress_status.setValue(i + 1)
 
-            for index, name in enumerate(METRICS_LIST):
+            metrics = self.list_metrics.get_enabled_metrics()
+            for index, name in enumerate(metrics):
                 model.setItem(i, index + 2, QStandardItem(str(result[name])))
 
         def _deinit(total_count):
@@ -141,7 +167,8 @@ class FormMetrics(QWidget, UIFormMetrics):
             total_count = self.table_result.property('total_count')
             model = self.table_result.model()
 
-            thread = _ProcessThread(self, directory, total_count, model)
+            metrics = self.list_metrics.get_enabled_metrics()
+            thread = _ProcessThread(self, directory, total_count, model, metrics)
             thread.init.connect(_init)
             thread.before_loop.connect(_before_loop)
             thread.after_loop.connect(_after_loop)
@@ -157,11 +184,12 @@ class FormMetrics(QWidget, UIFormMetrics):
                 filter='*.csv', initialFilter='*.csv'
             )
             if filename_ok:
+                metrics = self.list_metrics.get_enabled_metrics()
                 with open(filename_str, 'w', newline='') as csv_file:
                     writer = csv.writer(csv_file)
-                    writer.writerow(['Path', *METRICS_LIST])
+                    writer.writerow(['Path', *metrics])
 
-                    m = len(METRICS_LIST)
+                    m = len(metrics)
                     model = self.table_result.model()
                     total_count = self.table_result.property('total_count')
                     for i in range(total_count):

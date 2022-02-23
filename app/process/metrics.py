@@ -1,6 +1,6 @@
 import math
 from functools import lru_cache
-from typing import List, Tuple
+from typing import List, Tuple, Optional
 
 import numpy as np
 import pandas as pd
@@ -276,7 +276,10 @@ METRICS_LIST = [
 ]
 
 
-def get_all_metrics(directory: str, force: bool = False):
+def get_all_metrics(directory: str, force: bool = False,
+                    metrics: Optional[List[str]] = None):
+    metrics = metrics or METRICS_LIST
+
     simudata_file = simudata_file_in_directory(directory)
     exp_center_file = exp_center_file_in_directory(directory)
     outformation_file = find_outformation_in_directory(directory)
@@ -286,20 +289,29 @@ def get_all_metrics(directory: str, force: bool = False):
     exp_data = pd.read_csv(exp_center_file)
     outformation_data = load_outformation(outformation_file)
 
-    initial_reduce, final_total_size = get_initial_reduce_and_final_total_size(outformation_data)
-    return {
-        'formation_num': get_formation_num(outformation_data),
-        'initial_reduce': initial_reduce,
-        'final_total_size': final_total_size,
-        'dispersion': get_dispersion(simudata, exp_data, outformation_data),
-        'density': get_density(simudata, exp_data),
-        'center_gap': get_center_gap(simudata, exp_data),
-        'dangerous_frequency': get_danger_frequency(outformation_data),
-        'crash_probability': get_crash_probability(outformation_data),
-        'polarization': get_polarization(simudata, exp_data, outformation_data),
-        # 'execute_time': -1,
-        'airway_bias': get_airway_bias(simudata, exp_data),
-        'loc_bias': get_loc_bias(simudata, exp_data),
-        # 'adjust_ratio': -1,
-        'stable_time': get_stable_time(outformation_data),
+    irft = None
+
+    def _get_irft() -> Tuple[float, float]:
+        nonlocal irft
+        if irft is None:
+            irft = get_initial_reduce_and_final_total_size(outformation_data)
+
+        return irft
+
+    data_map = {
+        'formation_num': lambda: get_formation_num(outformation_data),
+        'initial_reduce': lambda: _get_irft()[0],
+        'final_total_size': lambda: _get_irft()[1],
+        'dispersion': lambda: get_dispersion(simudata, exp_data, outformation_data),
+        'density': lambda: get_density(simudata, exp_data),
+        'center_gap': lambda: get_center_gap(simudata, exp_data),
+        'dangerous_frequency': lambda: get_danger_frequency(outformation_data),
+        'crash_probability': lambda: get_crash_probability(outformation_data),
+        'polarization': lambda: get_polarization(simudata, exp_data, outformation_data),
+        # 'execute_time': lambda: -1,
+        'airway_bias': lambda: get_airway_bias(simudata, exp_data),
+        'loc_bias': lambda: get_loc_bias(simudata, exp_data),
+        # 'adjust_ratio': lambda: -1,
+        'stable_time': lambda: get_stable_time(outformation_data),
     }
+    return {name: data_map[name]() for name in metrics}
