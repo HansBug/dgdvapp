@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>form_spearman</class>
- <widget class="QWidget" name="form_spearman">
+ <class>form_spearmanr</class>
+ <widget class="QWidget" name="form_spearmanr">
   <property name="geometry">
    <rect>
     <x>0</x>

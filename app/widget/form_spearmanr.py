@@ -12,10 +12,10 @@ from hbutils.color import Color
 from hbutils.reflection import nested_for
 
 from .models import NameStatus
-from ..ui import UIFormSpearman
+from ..ui import UIFormSpearmanr
 
 
-class FormSpearman(QWidget, UIFormSpearman):
+class FormSpearmanr(QWidget, UIFormSpearmanr):
     def __init__(self):
         QWidget.__init__(self)
         self.__lock = Lock()
@@ -130,6 +130,7 @@ class FormSpearman(QWidget, UIFormSpearman):
                 self.xi_names = {name: i for i, name in enumerate(x_names)}
                 self.yi_names = {name: i for i, name in enumerate(y_names)}
 
+            # noinspection PyUnresolvedReferences
             def run(self) -> None:
                 total = len(self.x_names) * len(self.y_names)
                 self.init.emit(total, self.x_names, self.y_names)
@@ -142,6 +143,7 @@ class FormSpearman(QWidget, UIFormSpearman):
 
                 self.deinit.emit(total)
 
+        # noinspection PyUnusedLocal
         def _init(total, x_names, y_names):
             self.__lock.acquire()
             result = QStandardItemModel(len(x_names), len(y_names))
@@ -153,22 +155,9 @@ class FormSpearman(QWidget, UIFormSpearman):
             self.button_analysis.setEnabled(False)
             self.button_export.setEnabled(False)
 
+        # noinspection PyUnusedLocal
         def _before_loop(xname, yname, i, total, xi, yi):
             pass
-
-        def _color_level(arho):
-            if arho >= 0.8:
-                return 0
-            elif arho >= 0.6:
-                return 1
-            elif arho >= 0.4:
-                return 2
-            elif arho >= 0.2:
-                return 3
-            elif arho >= 0.1:
-                return 4
-            else:
-                return 5
 
         def _color_choose(rho):
             if math.isnan(rho):
@@ -176,10 +165,11 @@ class FormSpearman(QWidget, UIFormSpearman):
             else:
                 return str(Color.from_hls(
                     (0 if rho >= 0 else 1) / 3,
-                    1 - (_color_level(abs(rho)) - 5) ** 2 * 3 / 200,
+                    (3 * (abs(rho) - 1) ** 2 + 5) / 8,
                     1.0
                 ))
 
+        # noinspection PyUnusedLocal
         def _after_loop(xname, yname, i, total, xi, yi, rho, pval):
             model: QStandardItemModel = self.table_analysis.model()
             item = QStandardItem('nan' if math.isnan(rho) else '%.4f' % (rho,))
@@ -188,6 +178,7 @@ class FormSpearman(QWidget, UIFormSpearman):
             item.setBackground(QBrush(QColor(_color_choose(rho))))
             model.setItem(xi, yi, item)
 
+        # noinspection PyUnusedLocal
         def _deinit(total):
             self.tabs_pages.setCurrentIndex(1)
             self.button_analysis.setEnabled(True)
@@ -195,6 +186,7 @@ class FormSpearman(QWidget, UIFormSpearman):
             self.__lock.release()
             QMessageBox.information(self, 'Analysis', 'Completed!')
 
+        # noinspection PyUnresolvedReferences
         def _analysis():
             x_names, y_names = self.table_items.get_names()
             df = self.table_data.property('data')

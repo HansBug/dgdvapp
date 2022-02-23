@@ -7,7 +7,7 @@ from .dialog_config import DialogConfig
 from .form_generate import FormGenerate
 from .form_log_process import FormLogProcess
 from .form_metrics import FormMetrics
-from .form_spearman import FormSpearman
+from .form_spearmanr import FormSpearmanr
 from ..ui import UIMainWindow
 
 
@@ -64,7 +64,7 @@ class AppMainWindow(QMainWindow, UIMainWindow):
     def _init_open_spearman(self):
         # noinspection DuplicatedCode
         def _show_form():
-            form = FormSpearman()
+            form = FormSpearmanr()
             sub_window = self.mdi_area.addSubWindow(form)
             sub_window.setFixedSize(sub_window.width(), sub_window.height())
             sub_window.setMaximumSize(sub_window.width(), sub_window.height())
