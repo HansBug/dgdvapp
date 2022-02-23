@@ -47,15 +47,14 @@ class DialogCombo(QDialog, UiDialogCombo):
 
         self.combo_selection.setCurrentIndex(0)
 
-    @property
     def selected(self) -> str:
         index = self.combo_selection.currentIndex()
         return self.combo_selection.itemText(index)
 
     @classmethod
-    def show_selection(cls, parent, title, content, selections):
+    def get_selection(cls, parent, title, content, selections):
         dialog = cls(parent, title, content, selections)
         if dialog.exec() == QDialog.Accepted:
-            return dialog.selected, True
+            return dialog.selected(), True
         else:
             return None, False
