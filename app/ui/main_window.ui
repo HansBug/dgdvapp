@@ -46,7 +46,7 @@
     <addaction name="action_log_processing"/>
     <addaction name="action_result_metrics"/>
     <addaction name="separator"/>
-    <addaction name="action_data_visualization"/>
+    <addaction name="action_spearman"/>
    </widget>
    <widget class="QMenu" name="menu_About">
     <property name="title">
@@ -86,6 +86,11 @@
   <action name="action_log_processing">
    <property name="text">
     <string>&amp;Log Processing</string>
+   </property>
+  </action>
+  <action name="action_spearman">
+   <property name="text">
+    <string>&amp;Spearmanr Correlation Analysis</string>
    </property>
   </action>
  </widget>

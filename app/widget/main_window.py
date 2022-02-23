@@ -7,6 +7,7 @@ from .dialog_config import DialogConfig
 from .form_generate import FormGenerate
 from .form_log_process import FormLogProcess
 from .form_metrics import FormMetrics
+from .form_spearman import FormSpearman
 from ..ui import UIMainWindow
 
 
@@ -22,6 +23,7 @@ class AppMainWindow(QMainWindow, UIMainWindow):
         self._init_open_generate()
         self._init_open_log_process()
         self._init_open_metrics()
+        self._init_open_spearman()
 
     def _init_open_generate(self):
         # noinspection DuplicatedCode
@@ -58,6 +60,18 @@ class AppMainWindow(QMainWindow, UIMainWindow):
             sub_window.show()
 
         self.action_result_metrics.triggered.connect(_show_form)
+
+    def _init_open_spearman(self):
+        # noinspection DuplicatedCode
+        def _show_form():
+            form = FormSpearman()
+            sub_window = self.mdi_area.addSubWindow(form)
+            sub_window.setFixedSize(sub_window.width(), sub_window.height())
+            sub_window.setMaximumSize(sub_window.width(), sub_window.height())
+            sub_window.setWindowFlags(sub_window.windowFlags() & ~Qt.WindowMaximizeButtonHint)
+            sub_window.show()
+
+        self.action_spearman.triggered.connect(_show_form)
 
     def _init_this_application(self):
         self.action_application.triggered.connect(self._event_open_dialog_config)

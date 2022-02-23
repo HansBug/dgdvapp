@@ -11,7 +11,8 @@ UI_FILES := \
 	form_generate.ui \
 	form_log_process.ui \
 	form_metrics.ui \
-	dialog_combo.ui
+	dialog_combo.ui \
+	form_spearman.ui
 GUI_PY_FILES := $(addsuffix _ui.py, $(basename ${UI_FILES}))
 
 all: build
