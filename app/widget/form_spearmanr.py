@@ -168,7 +168,7 @@ class FormSpearmanr(QWidget, UIFormSpearmanr):
                 return str(Color.from_hls(2 / 3, 0.985, 1.0))
             else:
                 return str(Color.from_hls(
-                    (0 if rho >= 0 else 1) / 3,
+                    (1 - rho) / 6,
                     (3 * (abs(rho) - 1) ** 2 + 5) / 8,
                     1.0
                 ))
