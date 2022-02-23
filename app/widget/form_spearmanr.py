@@ -65,12 +65,12 @@ class FormSpearmanr(QWidget, UIFormSpearmanr):
                 names_model.setHorizontalHeaderLabels(['Name', 'Status'])
                 for i in range(m):
                     item_name = QStandardItem(str(names[i]))
-                    item_name.setFlags(Qt.ItemIsEnabled)
+                    item_name.setEditable(False)
                     names_model.setItem(i, 0, item_name)
 
                     nothing = NameStatus.NOTHING
                     item_status = QStandardItem(nothing.icon, nothing.text)
-                    item_status.setFlags(Qt.ItemIsEnabled)
+                    item_status.setEditable(False)
                     item_status.setData(nothing)
                     names_model.setItem(i, 1, item_status)
 
@@ -82,6 +82,10 @@ class FormSpearmanr(QWidget, UIFormSpearmanr):
         self.button_open.clicked.connect(_open)
 
     def _init_table_items(self):
+        names_model = QStandardItemModel(0, 2)
+        names_model.setHorizontalHeaderLabels(['Name', 'Status'])
+        self.table_items.setModel(names_model)
+
         def _dbl_click(index: QModelIndex):
             model = self.table_items.model()
             if index.column() == 1:

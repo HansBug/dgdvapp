@@ -66,3 +66,32 @@ class NameStatus(IntEnum):
             return self.NOTHING
         else:
             raise ValueError(f'Unknown status - {repr(self)}.')
+
+
+@int_enum_loads(enable_int=False, name_preprocess=str.upper, )
+@unique
+class DependentNameStatus(IntEnum):
+    NOTHING = 0
+    DEPENDENT = 1
+
+    @property
+    def text(self):
+        return self.name.lower().capitalize()
+
+    @property
+    def icon(self) -> QIcon:
+        if self == self.NOTHING:
+            return qta.icon('mdi.do-not-disturb', color='grey')
+        elif self == self.DEPENDENT:
+            return qta.icon('msc.output', color='blue')
+        else:
+            raise ValueError(f'Unknown status - {repr(self)}.')
+
+    @property
+    def next(self) -> 'DependentNameStatus':
+        if self == self.NOTHING:
+            return self.DEPENDENT
+        elif self == self.DEPENDENT:
+            return self.NOTHING
+        else:
+            raise ValueError(f'Unknown status - {repr(self)}.')
