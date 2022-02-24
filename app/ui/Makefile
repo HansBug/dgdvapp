@@ -15,7 +15,8 @@ UI_FILES := \
 	form_spearmanr.ui \
 	form_anova.ui \
 	dialog_multiple_choice.ui \
-	form_scatter.ui
+	form_scatter.ui \
+	form_boxplot.ui
 GUI_PY_FILES := $(addsuffix _ui.py, $(basename ${UI_FILES}))
 
 all: build

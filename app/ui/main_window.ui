@@ -50,6 +50,7 @@
     <addaction name="action_anova"/>
     <addaction name="separator"/>
     <addaction name="action_scatter"/>
+    <addaction name="action_boxplot"/>
    </widget>
    <widget class="QMenu" name="menu_About">
     <property name="title">
@@ -104,6 +105,11 @@
   <action name="action_scatter">
    <property name="text">
     <string>Scatter &amp;Plot</string>
+   </property>
+  </action>
+  <action name="action_boxplot">
+   <property name="text">
+    <string>&amp;Box Plot</string>
    </property>
   </action>
  </widget>

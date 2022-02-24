@@ -8,3 +8,4 @@ from .form_metrics_ui import Ui_form_metrics as UIFormMetrics
 from .form_scatter_ui import Ui_form_scatter as UIFormScatter
 from .form_spearmanr_ui import Ui_form_spearmanr as UIFormSpearmanr
 from .main_window_ui import Ui_main_window as UIMainWindow
+from .form_boxplot_ui import Ui_form_boxplot as UIFormBoxplot
