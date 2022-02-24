@@ -122,7 +122,7 @@ class FormSpearmanr(QWidget, UIFormSpearmanr):
         class _AnalysisThread(QThread):
             init = pyqtSignal(int, list, list)
             before_loop = pyqtSignal(str, str, int, int, int, int)
-            after_loop = pyqtSignal(str, str, int, int, int, int, float, float)
+            after_loop = pyqtSignal(str, str, int, int, int, int, float, float, int, int)
             deinit = pyqtSignal(int)
 
             def __init__(self, parent, df: pandas.DataFrame,
@@ -138,12 +138,16 @@ class FormSpearmanr(QWidget, UIFormSpearmanr):
             def run(self) -> None:
                 total = len(self.x_names) * len(self.y_names)
                 self.init.emit(total, self.x_names, self.y_names)
+                total_row = len(self.df)
 
                 for i, (xname, yname) in enumerate(nested_for(self.x_names, self.y_names)):
                     xi, yi = self.xi_names[xname], self.yi_names[yname]
                     self.before_loop.emit(xname, yname, i, total, xi, yi)
-                    rho, pval = scipy.stats.spearmanr(self.df[xname], self.df[yname])
-                    self.after_loop.emit(xname, yname, i, total, xi, yi, rho, pval)
+
+                    cdf = self.df[(self.df[xname] >= 0.0) | (self.df[yname] >= 0.0)]
+                    valid_row = len(cdf)
+                    rho, pval = scipy.stats.spearmanr(cdf[xname], cdf[yname])
+                    self.after_loop.emit(xname, yname, i, total, xi, yi, rho, pval, valid_row, total_row)
 
                 self.deinit.emit(total)
 
@@ -174,12 +178,16 @@ class FormSpearmanr(QWidget, UIFormSpearmanr):
                 ))
 
         # noinspection PyUnusedLocal
-        def _after_loop(xname, yname, i, total, xi, yi, rho, pval):
+        def _after_loop(xname, yname, i, total, xi, yi, rho, pval, valid_rows, total_rows):
             model: QStandardItemModel = self.table_analysis.model()
             item = QStandardItem('nan' if math.isnan(rho) else '%.4f' % (rho,))
             item.setData(rho)
             item.setFlags(Qt.ItemIsEnabled)
             item.setBackground(QBrush(QColor(_color_choose(rho))))
+            item.setToolTip(f'{xname} -> {yname}:\n'
+                            f'rho: {rho}\n'
+                            f'pval: {pval}\n'
+                            f'valid / total: {valid_rows} / {total_rows}')
             model.setItem(xi, yi, item)
 
         # noinspection PyUnusedLocal
