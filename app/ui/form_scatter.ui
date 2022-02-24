@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>form_scatter</class>
+ <widget class="QWidget" name="form_scatter">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1016</width>
+    <height>576</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Scatter Plot</string>
+  </property>
+  <widget class="QTabWidget" name="tabs_pages">
+   <property name="geometry">
+    <rect>
+     <x>17</x>
+     <y>27</y>
+     <width>981</width>
+     <height>531</height>
+    </rect>
+   </property>
+   <property name="currentIndex">
+    <number>1</number>
+   </property>
+   <widget class="QWidget" name="tab_data">
+    <attribute name="title">
+     <string>Data</string>
+    </attribute>
+    <widget class="QTableView" name="table_data">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>20</y>
+       <width>941</width>
+       <height>431</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="button_open">
+     <property name="geometry">
+      <rect>
+       <x>690</x>
+       <y>460</y>
+       <width>271</width>
+       <height>25</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>&amp;Open...</string>
+     </property>
+     <property name="shortcut">
+      <string>Ctrl+O</string>
+     </property>
+    </widget>
+   </widget>
+   <widget class="QWidget" name="tab_display">
+    <attribute name="title">
+     <string>Display</string>
+    </attribute>
+    <widget class="QPushButton" name="button_export">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
+     <property name="geometry">
+      <rect>
+       <x>670</x>
+       <y>460</y>
+       <width>291</width>
+       <height>25</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>&amp;Export</string>
+     </property>
+     <property name="shortcut">
+      <string>Ctrl+S</string>
+     </property>
+    </widget>
+    <widget class="QWidget" name="widget_graph" native="true">
+     <property name="geometry">
+      <rect>
+       <x>19</x>
+       <y>19</y>
+       <width>621</width>
+       <height>461</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">border: 2px dashed grey</string>
+     </property>
+    </widget>
+    <widget class="QGroupBox" name="group_display">
+     <property name="geometry">
+      <rect>
+       <x>660</x>
+       <y>20</y>
+       <width>301</width>
+       <height>171</height>
+      </rect>
+     </property>
+     <property name="title">
+      <string>Display Options</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+     <widget class="QPushButton" name="button_display">
+      <property name="enabled">
+       <bool>false</bool>
+      </property>
+      <property name="geometry">
+       <rect>
+        <x>20</x>
+        <y>130</y>
+        <width>261</width>
+        <height>25</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>&amp;Display</string>
+      </property>
+      <property name="shortcut">
+       <string>Return</string>
+      </property>
+      <property name="checkable">
+       <bool>false</bool>
+      </property>
+      <property name="checked">
+       <bool>false</bool>
+      </property>
+     </widget>
+     <widget class="QComboBox" name="combo_x">
+      <property name="enabled">
+       <bool>false</bool>
+      </property>
+      <property name="geometry">
+       <rect>
+        <x>80</x>
+        <y>40</y>
+        <width>201</width>
+        <height>25</height>
+       </rect>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_x">
+      <property name="geometry">
+       <rect>
+        <x>23</x>
+        <y>44</y>
+        <width>67</width>
+        <height>17</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>X Axis :</string>
+      </property>
+     </widget>
+     <widget class="QComboBox" name="combo_y">
+      <property name="enabled">
+       <bool>false</bool>
+      </property>
+      <property name="geometry">
+       <rect>
+        <x>80</x>
+        <y>80</y>
+        <width>201</width>
+        <height>25</height>
+       </rect>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_y">
+      <property name="geometry">
+       <rect>
+        <x>23</x>
+        <y>84</y>
+        <width>67</width>
+        <height>17</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Y Axis :</string>
+      </property>
+     </widget>
+     <zorder>label_x</zorder>
+     <zorder>button_display</zorder>
+     <zorder>combo_x</zorder>
+     <zorder>combo_y</zorder>
+     <zorder>label_y</zorder>
+    </widget>
+    <widget class="QGroupBox" name="group_info">
+     <property name="geometry">
+      <rect>
+       <x>660</x>
+       <y>210</y>
+       <width>301</width>
+       <height>231</height>
+      </rect>
+     </property>
+     <property name="title">
+      <string>Information</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+     <widget class="QLabel" name="label_valid_total">
+      <property name="geometry">
+       <rect>
+        <x>20</x>
+        <y>40</y>
+        <width>261</width>
+        <height>17</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>valid / total: </string>
+      </property>
+     </widget>
+     <widget class="QTableView" name="table_selected">
+      <property name="geometry">
+       <rect>
+        <x>20</x>
+        <y>72</y>
+        <width>261</width>
+        <height>141</height>
+       </rect>
+      </property>
+     </widget>
+    </widget>
+   </widget>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

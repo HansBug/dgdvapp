@@ -48,6 +48,8 @@
     <addaction name="separator"/>
     <addaction name="action_spearman"/>
     <addaction name="action_anova"/>
+    <addaction name="separator"/>
+    <addaction name="action_scatter"/>
    </widget>
    <widget class="QMenu" name="menu_About">
     <property name="title">
@@ -97,6 +99,11 @@
   <action name="action_anova">
    <property name="text">
     <string>&amp;ANOVA Analysis</string>
+   </property>
+  </action>
+  <action name="action_scatter">
+   <property name="text">
+    <string>Scatter &amp;Plot</string>
    </property>
   </action>
  </widget>
