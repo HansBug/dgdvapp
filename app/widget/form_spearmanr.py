@@ -162,6 +162,7 @@ class FormSpearmanr(QWidget, UIFormSpearmanr):
             self.table_analysis.setProperty('y_names', y_names)
             self.button_analysis.setEnabled(False)
             self.button_export.setEnabled(False)
+            self.tabs_pages.setCurrentIndex(1)
 
         # noinspection PyUnusedLocal
         def _before_loop(xname, yname, i, total, xi, yi):
@@ -192,7 +193,6 @@ class FormSpearmanr(QWidget, UIFormSpearmanr):
 
         # noinspection PyUnusedLocal
         def _deinit(total):
-            self.tabs_pages.setCurrentIndex(1)
             self.button_analysis.setEnabled(True)
             self.button_export.setEnabled(True)
             self.__lock.release()

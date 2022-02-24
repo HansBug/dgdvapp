@@ -2,11 +2,12 @@ import csv
 import math
 from threading import Lock
 from types import MethodType
+from typing import List
 
 import pandas as pd
 import qtawesome as qta
 from PyQt5.Qt import QWidget, Qt, QFileDialog, QStandardItemModel, QStandardItem, QMessageBox, QHeaderView, \
-    QTableView, QModelIndex, QColor, QBrush
+    QTableView, QModelIndex, QColor, QBrush, QThread, pyqtSignal
 from hbutils.color import Color
 from statsmodels.formula.api import ols
 from statsmodels.stats.anova import anova_lm
@@ -16,24 +17,21 @@ from .models import DependentNameStatus
 from ..ui import UIFormANOVA
 
 
-def _get_sigmoid():
+def _get_sigmoid(x1, y1, x2, y2):
     def sigmoid(x):
         return 1 / (1 + math.exp(-x))
 
     def anti_sigmoid(y):
-        return -math.log(1 / y - 1) / math.log(math.e)
+        return -math.log(1 / y - 1)
 
-    x1 = -math.log(0.05) / math.log(10)
-    x2 = -math.log(0.01) / math.log(10)
-    xe1 = anti_sigmoid(0.2)
-    xe2 = anti_sigmoid(0.8)
+    # x1 = -math.log(0.05) / math.log(10)
+    # x2 = -math.log(0.01) / math.log(10)
+    xe1 = anti_sigmoid(y1)
+    xe2 = anti_sigmoid(y2)
     k = (xe2 - xe1) / (x2 - x1)
     b = xe1 - k * x1
 
-    def s2(x):
-        return sigmoid(k * x + b)
-
-    return s2
+    return lambda x: sigmoid(k * x + b)
 
 
 class FormANOVA(QWidget, UIFormANOVA):
@@ -212,7 +210,50 @@ class FormANOVA(QWidget, UIFormANOVA):
         self.table_dependents.get_dependents = MethodType(_get_dependents, self.table_dependents)
 
     def _init_button_analysis(self):
-        _sigmoid = _get_sigmoid()
+        class _AnalysisThread(QThread):
+            init = pyqtSignal(int)
+            before_loop = pyqtSignal(int, int, str)
+            after_loop = pyqtSignal(int, int, str, object, object)
+            deinit = pyqtSignal(int)
+
+            def __init__(self, parent, independents, dependents,
+                         model: QStandardItemModel, df: pd.DataFrame, names: List[str]):
+                QThread.__init__(self, parent)
+                self.independents = independents
+                self.dependents = dependents
+                self.model = model
+                self.df = df
+                self.names = names
+
+            def run(self) -> None:
+                n = len(self.dependents)
+                m = len(self.independents)
+                self.init.emit(n)
+                new_names = {'name_%d' % (i,) for i in range(len(self.names))}
+                name_to_new = dict(zip(self.names, new_names))
+
+                dfx = pd.DataFrame({new_name: self.df[name] for name, new_name in name_to_new.items()})
+                tail_str = ' + '.join(
+                    map(lambda x: ' * '.join(map(lambda x_: 'C(%s)' % (name_to_new[x_],), x)), self.independents))
+                for j, dep in enumerate(self.dependents):
+                    self.before_loop.emit(j, n, dep)
+
+                    sentence = '%s ~ %s' % (name_to_new[dep], tail_str)
+                    try:
+                        anova_result = anova_lm(ols(sentence, data=dfx).fit())
+                        pr_result = anova_result['PR(>F)']
+                    except ValueError:
+                        anova_result = None
+                        pr_result = [math.nan] * m
+
+                    self.after_loop.emit(j, n, dep, anova_result, pr_result)
+
+                self.deinit.emit(n)
+
+        _sigmoid_vl = _get_sigmoid(
+            -math.log(0.05) / math.log(10), 0.2,
+            -math.log(0.01) / math.log(10), 0.8,
+        )
 
         def _color(pr: float):
             if math.isnan(pr):
@@ -223,44 +264,61 @@ class FormANOVA(QWidget, UIFormANOVA):
                 except ValueError:
                     _log10 = +math.inf
 
-                sv = _sigmoid(_log10)
-                return str(Color.from_hls(1 / 6, (3 * (sv - 1) ** 2 + 5) / 8, 1.0))
+                svl = _sigmoid_vl(_log10)
+                return str(Color.from_hls((1 - svl) / 6, (3 * (svl - 1) ** 2 + 5) / 8, 1.0))
 
         def _analysis():
             independents = self.table_independents.get_independents()
             dependents = self.table_dependents.get_dependents()
 
             model = QStandardItemModel(len(independents), len(dependents))
-            model.setHorizontalHeaderLabels(dependents)
-            model.setVerticalHeaderLabels(
-                list(map(lambda x: ':'.join(map(lambda x_: 'C(%s)' % (x_,), x)), independents)))
             self.table_analysis.setModel(model)
 
             df: pd.DataFrame = self.table_data.property('data')
             names = self.table_data.property('names')
-            new_names = {'name_%d' % (i,) for i in range(len(names))}
-            name_to_new = dict(zip(names, new_names))
 
-            dfx = pd.DataFrame({new_name: df[name] for name, new_name in name_to_new.items()})
-            tail_str = ' + '.join(
-                map(lambda x: ' * '.join(map(lambda x_: 'C(%s)' % (name_to_new[x_],), x)), independents))
-            for j, dep in enumerate(dependents):
-                sentence = '%s ~ %s' % (name_to_new[dep], tail_str)
-                try:
-                    anova_result = anova_lm(ols(sentence, data=dfx).fit())['PR(>F)']
-                except ValueError:
-                    anova_result = [math.nan] * len(independents)
+            def _init(total):
+                self.__lock.acquire()
+                model.setHorizontalHeaderLabels(dependents)
+                model.setVerticalHeaderLabels(
+                    list(map(lambda x: ':'.join(map(lambda x_: 'C(%s)' % (x_,), x)), independents)))
+                self.button_analysis.setEnabled(False)
+                self.button_export.setEnabled(False)
+                self.tabs_pages.setCurrentIndex(1)
 
+            def _before_loop(j, total, dep):
+                pass
+
+            def _after_loop(j, total, dep, anova_result, pr_result):
                 for i in range(len(independents)):
-                    pr = anova_result[i]
+                    indep = model.verticalHeaderItem(i).text()
+
+                    pr = pr_result[i]
                     item = QStandardItem('%.3e' % (pr,) if not math.isnan(pr) else str(pr))
                     item.setEditable(False)
                     item.setData(pr)
                     item.setBackground(QBrush(QColor(_color(pr))))
+                    item.setToolTip(f'{dep} ~ {indep}\n'
+                                    f'df: {anova_result["df"][i]}\n'
+                                    f'sum_sq: {anova_result["sum_sq"][i]}\n'
+                                    f'mean_sq: {anova_result["mean_sq"][i]}\n'
+                                    f'F: {anova_result["F"][i]}\n'
+                                    f'PR(>F): {anova_result["PR(>F)"][i]}')
                     model.setItem(i, j, item)
 
-            self.tabs_pages.setCurrentIndex(1)
-            self.button_export.setEnabled(True)
+            def _deinit(total):
+                self.button_analysis.setEnabled(True)
+                self.button_export.setEnabled(True)
+                self.__lock.release()
+                QMessageBox.information(self, 'Analysis', 'Completed!')
+
+            _thread = _AnalysisThread(self, independents, dependents,
+                                      model, df, names)
+            _thread.init.connect(_init)
+            _thread.before_loop.connect(_before_loop)
+            _thread.after_loop.connect(_after_loop)
+            _thread.deinit.connect(_deinit)
+            _thread.start()
 
         self.button_analysis.clicked.connect(_analysis)
 
