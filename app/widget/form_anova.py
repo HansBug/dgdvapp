@@ -213,7 +213,7 @@ class FormANOVA(QWidget, UIFormANOVA):
         class _AnalysisThread(QThread):
             init = pyqtSignal(int)
             before_loop = pyqtSignal(int, int, str)
-            after_loop = pyqtSignal(int, int, str, object, object)
+            after_loop = pyqtSignal(int, int, str, object, object, int, int)
             deinit = pyqtSignal(int)
 
             def __init__(self, parent, independents, dependents,
@@ -233,20 +233,24 @@ class FormANOVA(QWidget, UIFormANOVA):
                 name_to_new = dict(zip(self.names, new_names))
 
                 dfx = pd.DataFrame({new_name: self.df[name] for name, new_name in name_to_new.items()})
+                total_rows = len(dfx)
                 tail_str = ' + '.join(
                     map(lambda x: ' * '.join(map(lambda x_: 'C(%s)' % (name_to_new[x_],), x)), self.independents))
                 for j, dep in enumerate(self.dependents):
                     self.before_loop.emit(j, n, dep)
 
-                    sentence = '%s ~ %s' % (name_to_new[dep], tail_str)
+                    new_dep = name_to_new[dep]
+                    sentence = '%s ~ %s' % (new_dep, tail_str)
+                    dfxc = dfx[dfx[new_dep] >= 0.0]
+                    valid_rows = len(dfxc)
                     try:
-                        anova_result = anova_lm(ols(sentence, data=dfx).fit())
+                        anova_result = anova_lm(ols(sentence, data=dfxc).fit())
                         pr_result = anova_result['PR(>F)']
                     except ValueError:
                         anova_result = None
                         pr_result = [math.nan] * m
 
-                    self.after_loop.emit(j, n, dep, anova_result, pr_result)
+                    self.after_loop.emit(j, n, dep, anova_result, pr_result, valid_rows, total_rows)
 
                 self.deinit.emit(n)
 
@@ -289,7 +293,7 @@ class FormANOVA(QWidget, UIFormANOVA):
             def _before_loop(j, total, dep):
                 pass
 
-            def _after_loop(j, total, dep, anova_result, pr_result):
+            def _after_loop(j, total, dep, anova_result, pr_result, valid_rows, total_rows):
                 for i in range(len(independents)):
                     indep = model.verticalHeaderItem(i).text()
 
@@ -298,12 +302,18 @@ class FormANOVA(QWidget, UIFormANOVA):
                     item.setEditable(False)
                     item.setData(pr)
                     item.setBackground(QBrush(QColor(_color(pr))))
-                    item.setToolTip(f'{dep} ~ {indep}\n'
-                                    f'df: {anova_result["df"][i]}\n'
-                                    f'sum_sq: {anova_result["sum_sq"][i]}\n'
-                                    f'mean_sq: {anova_result["mean_sq"][i]}\n'
-                                    f'F: {anova_result["F"][i]}\n'
-                                    f'PR(>F): {anova_result["PR(>F)"][i]}')
+                    if anova_result is not None:
+                        item.setToolTip(f'{dep} ~ {indep}\n'
+                                        f'valid / total: {valid_rows} / {total_rows}\n'
+                                        f'df: {anova_result["df"][i]}\n'
+                                        f'sum_sq: {anova_result["sum_sq"][i]}\n'
+                                        f'mean_sq: {anova_result["mean_sq"][i]}\n'
+                                        f'F: {anova_result["F"][i]}\n'
+                                        f'PR(>F): {anova_result["PR(>F)"][i]}')
+                    else:
+                        item.setToolTip(f'{dep} ~ {indep}\n'
+                                        f'valid / total: {valid_rows} / {total_rows}\n'
+                                        f'Invalid ANOVA result.')
                     model.setItem(i, j, item)
 
             def _deinit(total):

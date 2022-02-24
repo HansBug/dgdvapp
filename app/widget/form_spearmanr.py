@@ -144,7 +144,7 @@ class FormSpearmanr(QWidget, UIFormSpearmanr):
                     xi, yi = self.xi_names[xname], self.yi_names[yname]
                     self.before_loop.emit(xname, yname, i, total, xi, yi)
 
-                    cdf = self.df[(self.df[xname] >= 0.0) | (self.df[yname] >= 0.0)]
+                    cdf = self.df[(self.df[xname] >= 0.0) & (self.df[yname] >= 0.0)]
                     valid_row = len(cdf)
                     rho, pval = scipy.stats.spearmanr(cdf[xname], cdf[yname])
                     self.after_loop.emit(xname, yname, i, total, xi, yi, rho, pval, valid_row, total_row)
