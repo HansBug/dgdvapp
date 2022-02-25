@@ -1,10 +1,11 @@
 import math
 from threading import Lock
-from typing import List, Tuple
+from typing import List, Tuple, Mapping
 
 import pandas as pd
 from PyQt5.Qt import QWidget, Qt, QFileDialog, QStandardItemModel, QStandardItem, QMessageBox, QPoint, QMenu, QAction, \
-    QModelIndex, QThread, pyqtSignal
+    QModelIndex, QThread, pyqtSignal, QColor
+from hbutils.color import Color, rnd_colors
 from hbutils.string import plural_word
 
 from .models import MessageType
@@ -161,15 +162,30 @@ class FormMessageLogging(QWidget, UIFormMessageLogging):
         self.table_messages.setModel(model)
 
     def _init_button_logging(self):
-        def _get_participants() -> List[id]:
+        def _get_participants() -> Tuple[List[int], Mapping[int, Color]]:
             model: QStandardItemModel = self.list_items.model()
             ids = []
             for i in range(model.rowCount()):
                 item: QStandardItem = model.item(i, 0)
                 if item.checkState() == Qt.Checked:
-                    ids.append(item.data())
+                    ids.append(int(item.data()))
 
-            return ids
+            ncnt = len(ids)
+            map_ = {}
+            cs = rnd_colors(ncnt, 0.9, 0.8)
+            for i in range(model.rowCount()):
+                item: QStandardItem = model.item(i, 0)
+                if item.checkState() == Qt.Checked:
+                    nc = next(cs)
+                    idx = int(item.data())
+                    map_[idx] = nc
+                    item.setBackground(QColor(str(nc)))
+                else:
+                    item.setBackground(QColor('white'))
+
+                model.setItem(i, 0, item)
+
+            return ids, map_
 
         def _get_start_and_end() -> Tuple[float, float]:
             start_time = self.slider_start_time.value()
@@ -195,8 +211,7 @@ class FormMessageLogging(QWidget, UIFormMessageLogging):
                 self.deinit.emit(total_rows)
 
         def _show():
-
-            pids = _get_participants()
+            pids, cmap = _get_participants()
             pid_set = set(pids)
             start_time, end_time = _get_start_and_end()
 
@@ -222,13 +237,17 @@ class FormMessageLogging(QWidget, UIFormMessageLogging):
                 item_time.setTextAlignment(Qt.AlignCenter)
                 item_time.setEditable(False)
 
-                item_send = QStandardItem(str(int(row['send_id'])))
+                send_id = int(row['send_id'])
+                item_send = QStandardItem(str(send_id))
                 item_send.setTextAlignment(Qt.AlignCenter)
                 item_send.setEditable(False)
+                item_send.setBackground(QColor(str(cmap[send_id])))
 
-                item_receive = QStandardItem(str(int(row['receive_id'])))
+                receive_id = int(row['receive_id'])
+                item_receive = QStandardItem(str(receive_id))
                 item_receive.setTextAlignment(Qt.AlignCenter)
                 item_receive.setEditable(False)
+                item_receive.setBackground(QColor(str(cmap[receive_id])))
 
                 type_ = MessageType.loads(int(row['type']))
                 item_type = QStandardItem(type_.text)
