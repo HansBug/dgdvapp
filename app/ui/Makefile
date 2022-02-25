@@ -11,6 +11,7 @@ UI_FILES := \
 	form_generate.ui \
 	form_log_process.ui \
 	form_metrics.ui \
+	form_message_logging.ui \
 	dialog_combo.ui \
 	form_spearmanr.ui \
 	form_anova.ui \

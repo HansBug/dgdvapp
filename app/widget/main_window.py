@@ -8,6 +8,7 @@ from .form_anova import FormANOVA
 from .form_boxplot import FormBoxplot
 from .form_generate import FormGenerate
 from .form_log_process import FormLogProcess
+from .form_message_logging import FormMessageLogging
 from .form_metrics import FormMetrics
 from .form_scatter import FormScatter
 from .form_spearmanr import FormSpearmanr
@@ -26,6 +27,7 @@ class AppMainWindow(QMainWindow, UIMainWindow):
         self._init_open_generate()
         self._init_open_log_process()
         self._init_open_metrics()
+        self._init_open_message_logging()
         self._init_open_spearman()
         self._init_open_anova()
         self._init_open_scatter()
@@ -66,6 +68,18 @@ class AppMainWindow(QMainWindow, UIMainWindow):
             sub_window.show()
 
         self.action_result_metrics.triggered.connect(_show_form)
+
+    def _init_open_message_logging(self):
+        # noinspection DuplicatedCode
+        def _show_form():
+            form = FormMessageLogging()
+            sub_window = self.mdi_area.addSubWindow(form)
+            sub_window.setFixedSize(sub_window.width(), sub_window.height())
+            sub_window.setMaximumSize(sub_window.width(), sub_window.height())
+            sub_window.setWindowFlags(sub_window.windowFlags() & ~Qt.WindowMaximizeButtonHint)
+            sub_window.show()
+
+        self.action_message_logging.triggered.connect(_show_form)
 
     def _init_open_spearman(self):
         # noinspection DuplicatedCode

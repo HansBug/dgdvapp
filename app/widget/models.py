@@ -95,3 +95,26 @@ class DependentNameStatus(IntEnum):
             return self.NOTHING
         else:
             raise ValueError(f'Unknown status - {repr(self)}.')
+
+
+@int_enum_loads(name_preprocess=str.upper, )
+@unique
+class MessageType(IntEnum):
+    PENDING = 0
+    FAILED = 1
+    SUCCESS = 2
+
+    @property
+    def text(self):
+        return self.name.lower().capitalize()
+
+    @property
+    def icon(self) -> QIcon:
+        if self == self.PENDING:
+            return qta.icon('fa5s.hourglass-half', color='yellow')
+        elif self == self.FAILED:
+            return qta.icon('fa5s.times', color='red')
+        elif self == self.SUCCESS:
+            return qta.icon('fa5s.check', color='green')
+        else:
+            raise ValueError(f'Unknown status - {repr(self)}.')

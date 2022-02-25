@@ -45,6 +45,7 @@
     <addaction name="separator"/>
     <addaction name="action_log_processing"/>
     <addaction name="action_result_metrics"/>
+    <addaction name="action_message_logging"/>
     <addaction name="separator"/>
     <addaction name="action_spearman"/>
     <addaction name="action_anova"/>
@@ -90,6 +91,11 @@
   <action name="action_log_processing">
    <property name="text">
     <string>&amp;Log Processing</string>
+   </property>
+  </action>
+  <action name="action_message_logging">
+   <property name="text">
+    <string>Message Lo&amp;gging</string>
    </property>
   </action>
   <action name="action_spearman">
