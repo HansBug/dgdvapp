@@ -161,15 +161,22 @@ jobs:
           echo "GIT_COMMIT_ID=$(echo ${GITHUB_SHA} | cut -c1-7)" >> $GITHUB_ENV
           echo "PYTHON_VERSION=$(python -V | xargs -n 1 | tail -1)" >> $GITHUB_ENV
           echo "CPU_ARCH=$(uname -m)" >> $GITHUB_ENV
-      - name: Build standalone cli
+      - name: Build ${{ matrix.mode }} cli
         shell: bash
         env:
           STANDALONE: ${{ env.STANDALONE }}
         run: |
           make build
           ls -al dist
-      - name: Upload executable files to artifacts
+      - name: Upload standalone executable files to artifacts
+        if: ${{ env.STANDALONE == '1' }}
         uses: actions/upload-artifact@v2
         with:
           name: ${{ env.APP_NAME }}-v${{ env.PACKAGE_VERSION }}-${{ env.OS_NAME }}-${{ env.CPU_ARCH }}-${{ env.GIT_COMMIT_ID }}${{ env.RELEASE_SUFFIX }}
           path: dist/app${{ env.EXEC_SUFFIX }}
+      - name: Upload packed files to artifacts
+        if: ${{ env.STANDALONE == '' }}
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{ env.APP_NAME }}-v${{ env.PACKAGE_VERSION }}-${{ env.OS_NAME }}-${{ env.CPU_ARCH }}-${{ env.GIT_COMMIT_ID }}${{ env.RELEASE_SUFFIX }}
+          path: dist/app/*
