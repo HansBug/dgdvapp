@@ -93,7 +93,7 @@ class FormLogProcess(QWidget, UIFormLogProcess):
         def _init(total_count, model):
             self.button_open.setEnabled(False)
             self.button_start.setEnabled(False)
-            self.table_result.setSortingEnabled(False)
+            self.table_processing.setSortingEnabled(False)
 
             for i in range(total_count):
                 status = model.item(i, 1)
@@ -122,7 +122,7 @@ class FormLogProcess(QWidget, UIFormLogProcess):
             self.label_status.setText('Completed.')
             self.button_open.setEnabled(True)
             self.button_start.setEnabled(True)
-            self.table_result.setSortingEnabled(True)
+            self.table_processing.setSortingEnabled(True)
             QMessageBox.information(self, 'Log Processing', 'Completed!')
 
         def _process():
