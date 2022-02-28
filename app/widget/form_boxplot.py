@@ -9,8 +9,8 @@ import pandas as pd
 import pyqtgraph as pg
 import pyqtgraph.exporters
 from PyQt5 import QtGui
-from PyQt5.Qt import QPointF, QRectF, Qt, pyqtSignal
-from PyQt5.Qt import QWidget, QFileDialog, QStandardItemModel, QStandardItem, QMessageBox
+from PyQt5.Qt import QPointF, QRectF, Qt, pyqtSignal, QWidget, QFileDialog, QStandardItemModel, QStandardItem, \
+    QMessageBox
 
 from ..ui import UIFormBoxplot
 
@@ -34,7 +34,7 @@ def get_box_group(frame, x, y) -> pd.Series:
 
 
 class CandlestickItem(pg.GraphicsObject):
-    boxClicked = pyqtSignal(float, tuple, tuple, list)
+    boxClicked = pyqtSignal(QRectF, float, tuple, tuple, list)
 
     def __init__(self, data):
         pg.GraphicsObject.__init__(self)
@@ -96,9 +96,11 @@ class CandlestickItem(pg.GraphicsObject):
                 self.x_max = max(self.x_max, x + w / 2)
                 self.y_min = min(self.y_min, _y_min)
                 self.y_max = max(self.y_max, _y_max)
+                current_box = QRectF(x - w / 2, q1, w, q3 - q1)
                 self.boxs.append(
                     (
                         (x - w / 2, q1, w, q3 - q1),
+                        current_box,
                         x,
                         (lower, q1, q2, q3, upper),
                         (min_, max_, mean_, std_),
@@ -118,8 +120,8 @@ class CandlestickItem(pg.GraphicsObject):
     def mouseClickEvent(self, ev):
         if ev.button() == Qt.LeftButton:
             px, py = ev.pos().x(), ev.pos().y()
-            data = None
-            for (x_, y_, w_, h_), x, qs, mx, es in self.boxs:
+            data, pbox = None, None
+            for (x_, y_, w_, h_), pbox, x, qs, mx, es in self.boxs:
                 if x_ <= px <= x_ + w_ and y_ <= py <= y_ + h_:
                     data = (x, qs, mx, es)
                     break
@@ -127,7 +129,7 @@ class CandlestickItem(pg.GraphicsObject):
             if data is not None:
                 ev.accept()
                 x, qs, mx, es = data
-                self.boxClicked.emit(x, qs, mx, es)
+                self.boxClicked.emit(pbox, x, qs, mx, es)
             else:
                 ev.ignore()
         else:
@@ -241,7 +243,10 @@ class FormBoxplot(QWidget, UIFormBoxplot):
                 series: pd.Series = get_box_group(dfc, xname, yname)
                 item = CandlestickItem([(x, qs, mx, es) for x, (qs, mx, es) in series.items()])
 
-                def _box_click(x, qs, mx, es):
+                clicked_pen = pg.mkPen('b', width=2)
+                last_box = None
+
+                def _box_click(box: QRectF, x, qs, mx, es):
                     lower, q1, q2, q3, upper = qs
                     min_, max_, mean_, std_ = mx
 
