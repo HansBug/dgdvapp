@@ -1,11 +1,12 @@
 import math
-from functools import lru_cache
+from functools import lru_cache, partial
 from typing import List, Tuple, Optional
 
 import numpy as np
 import pandas as pd
 
 from .exp_center import exp_center_file_in_directory
+from .input import find_input_file_in_directory, get_input_values, _OUTPUT_NAMES
 from .log import log_process
 from .outformation import find_outformation_in_directory, load_outformation
 from .simudata import simudata_file_in_directory
@@ -258,7 +259,11 @@ def get_stable_time(outformation_data: List[Tuple[float, int, int]]) -> float:
     return ff(num / len(outformation_data) * 100)
 
 
-METRICS_LIST = [
+_ALL_NAME_LIST = [
+    # inputs
+    *_OUTPUT_NAMES,
+
+    # metrics
     'formation_num',
     'initial_reduce',
     'final_total_size',
@@ -277,14 +282,16 @@ METRICS_LIST = [
 
 
 def get_all_metrics(directory: str, force: bool = False,
-                    metrics: Optional[List[str]] = None):
-    metrics = metrics or METRICS_LIST
+                    shown_names: Optional[List[str]] = None):
+    shown_names = shown_names or _ALL_NAME_LIST
 
+    input_file = find_input_file_in_directory(directory)
     simudata_file = simudata_file_in_directory(directory)
     exp_center_file = exp_center_file_in_directory(directory)
     outformation_file = find_outformation_in_directory(directory)
     log_process(directory, force)
 
+    input_values = get_input_values(input_file)
     simudata = pd.read_csv(simudata_file)
     exp_data = pd.read_csv(exp_center_file)
     outformation_data = load_outformation(outformation_file)
@@ -313,5 +320,6 @@ def get_all_metrics(directory: str, force: bool = False,
         'loc_bias': lambda: get_loc_bias(simudata, exp_data),
         # 'adjust_ratio': lambda: -1,
         'stable_time': lambda: get_stable_time(outformation_data),
+        **{name: partial(input_values.__getitem__, name) for name in _OUTPUT_NAMES},
     }
-    return {name: data_map[name]() for name in metrics}
+    return {name: data_map[name]() for name in shown_names}

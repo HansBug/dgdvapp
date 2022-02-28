@@ -7,7 +7,7 @@ from PyQt5.Qt import QWidget, Qt, QStandardItemModel, QFileDialog, QStandardItem
     QListWidgetItem, QListWidget
 
 from .models import ProcessingStatus
-from ..process import METRICS_LIST, walk_log_directories, get_all_metrics
+from ..process import _ALL_NAME_LIST, walk_log_directories, get_all_metrics
 from ..ui import UIFormMetrics
 
 
@@ -31,7 +31,7 @@ class FormMetrics(QWidget, UIFormMetrics):
         self.setWindowFlags(self.windowFlags() & ~Qt.WindowMaximizeButtonHint)
 
     def _init_list_metrics(self):
-        for name in METRICS_LIST:
+        for name in _ALL_NAME_LIST:
             item = QListWidgetItem(self.list_metrics)
             item.setText(name)
             item.setCheckState(Qt.Checked)
@@ -115,7 +115,7 @@ class FormMetrics(QWidget, UIFormMetrics):
                     self.before_loop.emit(i, self.total_count, self.model)
 
                     relpath = self.model.item(i, 0).text()
-                    result = get_all_metrics(os.path.join(self.directory, relpath), metrics=self.metrics)
+                    result = get_all_metrics(os.path.join(self.directory, relpath), shown_names=self.metrics)
 
                     self.after_loop.emit(i, self.total_count, self.model, result)
 
