@@ -1,6 +1,6 @@
 import math
 from functools import lru_cache, partial
-from typing import List, Tuple, Optional
+from typing import List, Tuple, Optional, Mapping
 
 import numpy as np
 import pandas as pd
@@ -250,6 +250,34 @@ def get_loc_bias(simudata: pd.DataFrame, exp_data: pd.DataFrame) -> float:
     return aim
 
 
+def get_execute_time(inputs: Mapping[str, object], outformation_data: List[Tuple[float, int, int]]):
+    control_time = (inputs['time'], inputs['time.1'])
+    execute_time = 0
+    c_index = 0
+    cur_time = control_time[c_index]
+
+    for time_, out_form, total_size in outformation_data:
+        if abs(time_ - outformation_data[-1][0]) < 1e-6:
+            execute_time += time_ - cur_time
+            break
+        if c_index + 1 < len(control_time):
+            if time_ > control_time[c_index + 1]:
+                execute_time += time_ - cur_time
+                cur_time = control_time[c_index + 1]
+                c_index += 1
+
+        if (total_size - out_form) >= int(total_size * 0.95):
+            if time_ > cur_time:
+                execute_time += time_ - cur_time
+                if c_index + 1 == len(control_time):
+                    break
+                else:
+                    cur_time = control_time[c_index + 1]
+                    c_index += 1
+
+    return execute_time
+
+
 def get_stable_time(outformation_data: List[Tuple[float, int, int]]) -> float:
     num = 0
     for data in outformation_data:
@@ -273,7 +301,7 @@ _ALL_NAME_LIST = [
     'dangerous_frequency',
     'crash_probability',
     'polarization',
-    # 'execute_time',
+    'execute_time',
     'airway_bias',
     'loc_bias',
     # 'adjust_ratio',
@@ -315,7 +343,7 @@ def get_all_metrics(directory: str, force: bool = False,
         'dangerous_frequency': lambda: get_danger_frequency(outformation_data),
         'crash_probability': lambda: get_crash_probability(outformation_data),
         'polarization': lambda: get_polarization(simudata, exp_data, outformation_data),
-        # 'execute_time': lambda: -1,
+        'execute_time': lambda: get_execute_time(input_values, outformation_data),
         'airway_bias': lambda: get_airway_bias(simudata, exp_data),
         'loc_bias': lambda: get_loc_bias(simudata, exp_data),
         # 'adjust_ratio': lambda: -1,
