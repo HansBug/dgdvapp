@@ -335,12 +335,12 @@ class FormANOVA(QWidget, UIFormANOVA):
     def _init_button_export(self):
         def _export():
             with self.__lock:
-                filename_str, filename_ok = QFileDialog.getSaveFileName(
+                filename, _ = QFileDialog.getSaveFileName(
                     self, 'Export Analysis', filter='*.csv', initialFilter='*.csv')
-                if filename_ok:
+                if filename:
                     self.button_analysis.setEnabled(False)
                     self.button_export.setEnabled(False)
-                    with open(filename_str, 'w', newline='') as csv_file:
+                    with open(filename, 'w', newline='') as csv_file:
                         model: QStandardItemModel = self.table_analysis.model()
                         m = model.columnCount()
                         n = model.rowCount()

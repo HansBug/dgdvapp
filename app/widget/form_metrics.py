@@ -179,13 +179,13 @@ class FormMetrics(QWidget, UIFormMetrics):
 
     def _init_export(self):
         def _export():
-            filename_str, filename_ok = QFileDialog.getSaveFileName(
+            filename, _ = QFileDialog.getSaveFileName(
                 self, 'Result Export',
                 filter='*.csv', initialFilter='*.csv'
             )
-            if filename_ok:
+            if filename:
                 metrics = self.list_metrics.get_enabled_metrics()
-                with open(filename_str, 'w', newline='') as csv_file:
+                with open(filename, 'w', newline='') as csv_file:
                     writer = csv.writer(csv_file)
                     writer.writerow(['Path', *metrics])
 

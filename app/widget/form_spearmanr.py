@@ -215,12 +215,12 @@ class FormSpearmanr(QWidget, UIFormSpearmanr):
     def _init_export(self):
         def _export():
             with self.__lock:
-                filename_str, filename_ok = QFileDialog.getSaveFileName(
+                filename, _ = QFileDialog.getSaveFileName(
                     self, 'Export Analysis', filter='*.csv', initialFilter='*.csv')
-                if filename_ok:
+                if filename:
                     self.button_analysis.setEnabled(False)
                     self.button_export.setEnabled(False)
-                    with open(filename_str, 'w', newline='') as csv_file:
+                    with open(filename, 'w', newline='') as csv_file:
                         x_names = self.table_analysis.property('x_names')
                         y_names = self.table_analysis.property('y_names')
                         writer = csv.writer(csv_file)

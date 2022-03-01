@@ -309,19 +309,19 @@ class FormGenerate(QWidget, UIFormGenerate):
         )
 
         def _export_to_csv():
-            filename_str, filename_ok = QFileDialog.getSaveFileName(self, 'Export Result to CSV', filter='*.csv')
-            if filename_ok:
+            filename, _ = QFileDialog.getSaveFileName(self, 'Export Result to CSV', filter='*.csv')
+            if filename:
                 n, m = table.rowCount(), table.columnCount()
                 data = [[table.horizontalHeaderItem(i).text() for i in range(m)]]
                 for i in range(n):
                     data.append([table.item(i, j).text() for j in range(m)])
 
-                with open(filename_str, 'w', newline='') as csv_file:
+                with open(filename, 'w', newline='') as csv_file:
                     writer = csv.writer(csv_file)
                     for line in data:
                         writer.writerow(line)
 
-                QMessageBox.information(self, 'Export Result to CSV', f'Exported to {repr(filename_str)}.')
+                QMessageBox.information(self, 'Export Result to CSV', f'Exported to {repr(filename)}.')
 
         def _show_menu(curpos: QPoint):
             menu = QMenu(table)
