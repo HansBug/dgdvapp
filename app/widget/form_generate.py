@@ -34,6 +34,7 @@ class FormGenerate(QWidget, UIFormGenerate):
         self._init_initial_num()
         self._init_loc_offset()
         self._init_loc_err()
+        self._init_angle_error()
         self._init_perception()
         self._init_lost_possibility()
         self._init_table_control_type()
@@ -128,6 +129,34 @@ class FormGenerate(QWidget, UIFormGenerate):
 
         _text_change()
         self.edit_loc_err.textChanged.connect(_text_change)
+
+    def _init_angle_error(self):
+        _validator = QDoubleValidator(-10.0, 10.0, 4, self.edit_angle_err)
+        self.edit_angle_err.setValidator(_validator)
+
+        def _validate(t):
+            try:
+                v = float(t)
+            except ValueError:
+                return False, None
+
+            if -10.0 <= v <= 10.0:
+                return True, v
+            else:
+                return False, None
+
+        def _text_change():
+            text = self.edit_angle_err.text()
+            ok, val = _validate(text)
+            self.edit_angle_err.setProperty('ok', ok)
+
+            color = Color('black' if ok else 'red')
+            self.edit_angle_err.setStyleSheet(f"QLineEdit {{ color: {color}; }}")
+            self.label_angle_err.setStyleSheet(f"QLabel {{ color: {color}; }} ")
+            self._update_enablement()
+
+        _text_change()
+        self.edit_angle_err.textChanged.connect(_text_change)
 
     def _init_perception(self):
         def _edit_perception():
@@ -538,7 +567,7 @@ class FormGenerate(QWidget, UIFormGenerate):
     def _update_enablement(self):
         ok = bool(
             self.edit_initial_num.property('ok') and self.edit_loc_offset.property('ok') and
-            self.edit_loc_err.property('ok')
+            self.edit_loc_err.property('ok') and self.edit_angle_err.property('ok')
         )
         self.button_generate.setEnabled(ok)
 
