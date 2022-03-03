@@ -32,6 +32,7 @@ class FormGenerate(QWidget, UIFormGenerate):
     def _init(self):
         self._init_window_size()
         self._init_initial_num()
+        self._init_loc_offset()
         self._init_perception()
         self._init_lost_possibility()
         self._init_table_control_type()
@@ -47,24 +48,73 @@ class FormGenerate(QWidget, UIFormGenerate):
         _validator = QIntValidator(1, 1000, self.edit_initial_num)
         self.edit_initial_num.setValidator(_validator)
 
+        def _validate(t):
+            try:
+                v = int(t)
+            except ValueError:
+                return False, None
+
+            if 1 <= v <= 1000:
+                return True, v
+            else:
+                return False, None
+
         def _text_change():
             text = self.edit_initial_num.text()
-            initial_num_ok = bool(text and 1 <= int(text) <= 1000)
-            self.edit_initial_num.setProperty('ok', initial_num_ok)
+            ok, val = _validate(text)
+            self.edit_initial_num.setProperty('ok', ok)
+
+            color = Color('black' if ok else 'red')
             self.edit_initial_num.setStyleSheet(f"""
             QLineEdit {{
-                color: {Color('black' if initial_num_ok else 'red')};
+                color: {color};
             }}
             """)
             self.label_initial_num.setStyleSheet(f"""
             QLabel {{
-                color: {Color('black' if initial_num_ok else 'red')};
+                color: {color};
             }}
             """)
             self._update_enablement()
 
         _text_change()
         self.edit_initial_num.textChanged.connect(_text_change)
+
+    def _init_loc_offset(self):
+        _validator = QIntValidator(-500, 500, self.edit_loc_offset)
+        self.edit_loc_offset.setValidator(_validator)
+
+        def _validate(t):
+            try:
+                v = int(t)
+            except ValueError:
+                return False, None
+
+            if -500 <= v <= 500:
+                return True, v
+            else:
+                return False, None
+
+        def _text_change():
+            text = self.edit_loc_offset.text()
+            ok, val = _validate(text)
+            self.edit_loc_offset.setProperty('ok', ok)
+
+            color = Color('black' if ok else 'red')
+            self.edit_loc_offset.setStyleSheet(f"""
+            QLineEdit {{
+                color: {color};
+            }}
+            """)
+            self.label_loc_offset.setStyleSheet(f"""
+            QLabel {{
+                color: {color};
+            }}
+            """)
+            self._update_enablement()
+
+        _text_change()
+        self.edit_loc_offset.textChanged.connect(_text_change)
 
     def _init_perception(self):
         def _edit_perception():
@@ -473,7 +523,7 @@ class FormGenerate(QWidget, UIFormGenerate):
         self.button_generate.setPopupMode(QToolButton.ToolButtonPopupMode.InstantPopup)
 
     def _update_enablement(self):
-        ok = self.edit_initial_num.property('ok')
+        ok = bool(self.edit_initial_num.property('ok') and self.edit_loc_offset.property('ok'))
         self.button_generate.setEnabled(ok)
 
     @property
