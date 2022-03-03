@@ -66,16 +66,8 @@ class FormGenerate(QWidget, UIFormGenerate):
             self.edit_initial_num.setProperty('ok', ok)
 
             color = Color('black' if ok else 'red')
-            self.edit_initial_num.setStyleSheet(f"""
-            QLineEdit {{
-                color: {color};
-            }}
-            """)
-            self.label_initial_num.setStyleSheet(f"""
-            QLabel {{
-                color: {color};
-            }}
-            """)
+            self.edit_initial_num.setStyleSheet(f"QLineEdit {{ color: {color}; }}")
+            self.label_initial_num.setStyleSheet(f"QLabel {{ color: {color}; }}")
             self._update_enablement()
 
         _text_change()
@@ -102,16 +94,8 @@ class FormGenerate(QWidget, UIFormGenerate):
             self.edit_loc_offset.setProperty('ok', ok)
 
             color = Color('black' if ok else 'red')
-            self.edit_loc_offset.setStyleSheet(f"""
-            QLineEdit {{
-                color: {color};
-            }}
-            """)
-            self.label_loc_offset.setStyleSheet(f"""
-            QLabel {{
-                color: {color};
-            }}
-            """)
+            self.edit_loc_offset.setStyleSheet(f"QLineEdit {{ color: {color}; }}")
+            self.label_loc_offset.setStyleSheet(f"QLabel {{ color: {color}; }}")
             self._update_enablement()
 
         _text_change()
