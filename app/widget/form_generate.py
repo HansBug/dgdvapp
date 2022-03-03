@@ -6,7 +6,8 @@ from typing import List
 
 import qtawesome as qta
 from PyQt5.Qt import QWidget, QInputDialog, QToolButton, QMenu, QAction, QPoint, Qt, QMessageBox, QTableWidgetItem, \
-    QTableWidget, QThread, pyqtSignal, QFileDialog, QHeaderView
+    QTableWidget, QThread, pyqtSignal, QFileDialog, QHeaderView, QIntValidator
+from hbutils.color import Color
 from hbutils.model import int_enum_loads
 from hbutils.string import plural_word
 from hbutils.testing import AETGGenerator, MatrixGenerator, BaseGenerator
@@ -30,6 +31,7 @@ class FormGenerate(QWidget, UIFormGenerate):
 
     def _init(self):
         self._init_window_size()
+        self._init_initial_num()
         self._init_perception()
         self._init_lost_possibility()
         self._init_table_control_type()
@@ -40,6 +42,29 @@ class FormGenerate(QWidget, UIFormGenerate):
         self.setFixedSize(self.width(), self.height())
         self.setMaximumSize(self.width(), self.height())
         self.setWindowFlags(self.windowFlags() & ~Qt.WindowMaximizeButtonHint)
+
+    def _init_initial_num(self):
+        _validator = QIntValidator(1, 1000, self.edit_initial_num)
+        self.edit_initial_num.setValidator(_validator)
+
+        def _text_change():
+            text = self.edit_initial_num.text()
+            initial_num_ok = bool(text and 1 <= int(text) <= 1000)
+            self.edit_initial_num.setProperty('ok', initial_num_ok)
+            self.edit_initial_num.setStyleSheet(f"""
+            QLineEdit {{
+                color: {Color('black' if initial_num_ok else 'red')};
+            }}
+            """)
+            self.label_initial_num.setStyleSheet(f"""
+            QLabel {{
+                color: {Color('black' if initial_num_ok else 'red')};
+            }}
+            """)
+            self._update_enablement()
+
+        _text_change()
+        self.edit_initial_num.textChanged.connect(_text_change)
 
     def _init_perception(self):
         def _edit_perception():
@@ -446,6 +471,10 @@ class FormGenerate(QWidget, UIFormGenerate):
 
         self.button_generate.setMenu(menu)
         self.button_generate.setPopupMode(QToolButton.ToolButtonPopupMode.InstantPopup)
+
+    def _update_enablement(self):
+        ok = self.edit_initial_num.property('ok')
+        self.button_generate.setEnabled(ok)
 
     @property
     def initial_num(self) -> str:

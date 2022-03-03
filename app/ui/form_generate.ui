@@ -29,7 +29,7 @@
     <set>Qt::AlignCenter</set>
    </property>
    <property name="placeholderText">
-    <string>initial_num</string>
+    <string>[1, 1000]</string>
    </property>
   </widget>
   <widget class="QLineEdit" name="edit_loc_offset">
@@ -48,7 +48,7 @@
     <set>Qt::AlignCenter</set>
    </property>
    <property name="placeholderText">
-    <string>loc_offset</string>
+    <string>[-500, 500]</string>
    </property>
   </widget>
   <widget class="QLabel" name="label_initial_num">
@@ -99,7 +99,7 @@
     <set>Qt::AlignCenter</set>
    </property>
    <property name="placeholderText">
-    <string>loc_err</string>
+    <string>[0.0, 1.0]</string>
    </property>
   </widget>
   <widget class="QLabel" name="label_loc_err">
@@ -131,7 +131,7 @@
     <set>Qt::AlignCenter</set>
    </property>
    <property name="placeholderText">
-    <string>angle_err</string>
+    <string>[-10, 10]</string>
    </property>
   </widget>
   <widget class="QLabel" name="label_angle_err">

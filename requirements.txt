@@ -1,4 +1,4 @@
-hbutils>=0.4.0
+hbutils>=0.4.4
 click>=7.1.0
 PyQt5>=5.15.6
 qtmodern>=0.2.0
