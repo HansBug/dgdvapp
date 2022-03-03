@@ -6,7 +6,7 @@ from typing import List
 
 import qtawesome as qta
 from PyQt5.Qt import QWidget, QInputDialog, QToolButton, QMenu, QAction, QPoint, Qt, QMessageBox, QTableWidgetItem, \
-    QTableWidget, QThread, pyqtSignal, QFileDialog, QHeaderView, QIntValidator
+    QTableWidget, QThread, pyqtSignal, QFileDialog, QHeaderView, QIntValidator, QDoubleValidator
 from hbutils.color import Color
 from hbutils.model import int_enum_loads
 from hbutils.string import plural_word
@@ -33,6 +33,7 @@ class FormGenerate(QWidget, UIFormGenerate):
         self._init_window_size()
         self._init_initial_num()
         self._init_loc_offset()
+        self._init_loc_err()
         self._init_perception()
         self._init_lost_possibility()
         self._init_table_control_type()
@@ -115,6 +116,34 @@ class FormGenerate(QWidget, UIFormGenerate):
 
         _text_change()
         self.edit_loc_offset.textChanged.connect(_text_change)
+
+    def _init_loc_err(self):
+        _validator = QDoubleValidator(0.0, 1.0, 4, self.edit_loc_err)
+        self.edit_loc_err.setValidator(_validator)
+
+        def _validate(t):
+            try:
+                v = float(t)
+            except ValueError:
+                return False, None
+
+            if 0.0 <= v <= 1.0:
+                return True, v
+            else:
+                return False, None
+
+        def _text_change():
+            text = self.edit_loc_err.text()
+            ok, val = _validate(text)
+            self.edit_loc_err.setProperty('ok', ok)
+
+            color = Color('black' if ok else 'red')
+            self.edit_loc_err.setStyleSheet(f"QLineEdit {{ color: {color}; }}")
+            self.label_loc_err.setStyleSheet(f"QLabel {{ color: {color}; }} ")
+            self._update_enablement()
+
+        _text_change()
+        self.edit_loc_err.textChanged.connect(_text_change)
 
     def _init_perception(self):
         def _edit_perception():
@@ -523,7 +552,10 @@ class FormGenerate(QWidget, UIFormGenerate):
         self.button_generate.setPopupMode(QToolButton.ToolButtonPopupMode.InstantPopup)
 
     def _update_enablement(self):
-        ok = bool(self.edit_initial_num.property('ok') and self.edit_loc_offset.property('ok'))
+        ok = bool(
+            self.edit_initial_num.property('ok') and self.edit_loc_offset.property('ok') and
+            self.edit_loc_err.property('ok')
+        )
         self.button_generate.setEnabled(ok)
 
     @property
