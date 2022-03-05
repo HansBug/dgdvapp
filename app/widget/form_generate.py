@@ -347,10 +347,28 @@ class FormGenerate(QWidget, UIFormGenerate):
             table.setProperty('data', data)
             self.edit_control_num.setText(str(len(data)))
 
+        def _validate_time(tstr):
+            try:
+                v = int(tstr)
+                assert 0 <= v
+            except (ValueError, AssertionError):
+                QMessageBox.critical(self, 'Add Control Item', f'Invalid time - {repr(tstr)}.')
+                return None
+            else:
+                return tstr
+
+        def _validate_timelines(tm_str):
+            time_items = natsorted(set(filter(bool, map(str.strip, tm_str.splitlines()))))
+            for item in time_items:
+                if not _validate_time(item):
+                    return None
+
+            return time_items
+
         def _add_new_item():
             time_str, time_ok = QInputDialog.getMultiLineText(self, 'Add Control Item', 'Input the times of control:')
-            if time_ok:
-                time_items = natsorted(set(filter(bool, map(str.strip, time_str.splitlines()))))
+            if time_ok and _validate_timelines(time_str) is not None:
+                time_items = _validate_timelines(time_str)
                 control_str, control_ok = QInputDialog.getMultiLineText(
                     self, 'Add Control Item',
                     'Input the control items (gap,type,R1,R2,R3):'
