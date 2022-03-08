@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>箱图分布可视化</string>
+   <string>箱线图分布可视化</string>
   </property>
   <widget class="QTabWidget" name="tabs_pages">
    <property name="geometry">
@@ -23,7 +23,7 @@
     </rect>
    </property>
    <property name="currentIndex">
-    <number>0</number>
+    <number>1</number>
    </property>
    <widget class="QWidget" name="tab_data">
     <attribute name="title">

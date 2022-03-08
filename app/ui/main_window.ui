@@ -115,7 +115,7 @@
   </action>
   <action name="action_boxplot">
    <property name="text">
-    <string>箱图分布可视化(&amp;B)</string>
+    <string>箱线图分布可视化(&amp;B)</string>
    </property>
   </action>
  </widget>

@@ -165,7 +165,7 @@ class FormBoxplot(QWidget, UIFormBoxplot):
     def _init_button_open(self):
         def _open():
             filename, _ = QFileDialog.getOpenFileName(
-                self, 'Load Data', filter='*.csv', initialFilter='*.csv')
+                self, '数据加载', filter='*.csv', initialFilter='*.csv')
             if filename:
                 with self.__lock:
                     self.button_open.setEnabled(False)
@@ -206,7 +206,7 @@ class FormBoxplot(QWidget, UIFormBoxplot):
                     graph = self.widget_graph.property('graph')
                     if graph is not None:
                         graph.deleteLater()
-                    QMessageBox.information(self, 'Load Data', 'Completed!')
+                    QMessageBox.information(self, '数据加载', '数据加载完毕！')
 
         self.button_open.clicked.connect(_open)
 
@@ -251,14 +251,14 @@ class FormBoxplot(QWidget, UIFormBoxplot):
                     min_, max_, mean_, std_ = mx
 
                     self.label_x_value.setText(f'{xname}: {x}')
-                    self.label_valid_total.setText(f'valid / total: {len(dfc)} / {len(df)}')
-                    self.label_max.setText(f'Maximum: {max_}')
-                    self.label_min.setText(f'Minimum: {min_}')
-                    self.label_mean.setText(f'Mean: {mean_}')
-                    self.label_std.setText(f'Std Dev.: {std_}')
-                    self.label_qs.setText(f'q1 / q2 / q3: %.3f / %.3f / %.3f' % (q1, q2, q3))
-                    self.label_bound.setText(f'Lower / Upper: %.4f / %.4f' % (lower, upper))
-                    self.label_errors.setText(f'Error values: {len(es)}')
+                    self.label_valid_total.setText(f'有效 / 总量: {len(dfc)} / {len(df)}')
+                    self.label_max.setText(f'最大值: {max_}')
+                    self.label_min.setText(f'最小值: {min_}')
+                    self.label_mean.setText(f'均值: {mean_}')
+                    self.label_std.setText(f'标准差: {std_}')
+                    self.label_qs.setText(f'一分 / 二分 / 三分: %.3f / %.3f / %.3f' % (q1, q2, q3))
+                    self.label_bound.setText(f'下界 / 上界: %.4f / %.4f' % (lower, upper))
+                    self.label_errors.setText(f'异常值数量: {len(es)}')
                     self.label_errors.setProperty('es', es)
                     self.button_show_errors.setEnabled(True)
 
@@ -274,7 +274,7 @@ class FormBoxplot(QWidget, UIFormBoxplot):
                 self.tabs_pages.setCurrentIndex(1)
                 self.label_valid_total.setText(f'valid / total: {len(dfc)} / {len(df)}')
                 self.button_export.setEnabled(True)
-                QMessageBox.information(self, 'Display Scatter', 'Completed!')
+                QMessageBox.information(self, '显示箱线图', '箱线图显示完毕！')
 
         self.button_display.clicked.connect(_click)
 
@@ -284,27 +284,27 @@ class FormBoxplot(QWidget, UIFormBoxplot):
                 view: pg.GraphicsLayoutWidget = self.widget_graph.property('graph')
 
                 filename, filter_ = QFileDialog.getSaveFileName(
-                    self, 'Export Image',
-                    filter='SVG Image (*.svg);;PNG Image (*.png)',
-                    initialFilter='SVG Image (*.svg)',
+                    self, '导出图像',
+                    filter='SVG矢量图片 (*.svg);;PNG图片 (*.png)',
+                    initialFilter='SVG矢量图片 (*.svg)',
                 )
                 if 'svg' in filter_:
                     exporter = pg.exporters.SVGExporter(view.scene())
                 elif 'png' in filter_:
                     exporter = pg.exporters.ImageExporter(view.scene())
                 else:
-                    raise ValueError(f'Invalid filter - {filter_}.')
+                    raise ValueError(f'无法识别的文件格式 - {filter_}.')
 
                 exporter.export(filename)
-                QMessageBox.information(self, 'Export Image', 'Completed!')
+                QMessageBox.information(self, '导出图像', '图像导出完毕！')
 
         self.button_export.clicked.connect(_export)
 
     def _init_button_show_errors(self):
         def _click():
             es = self.label_errors.property('es')
-            QMessageBox.information(self, 'Error Values',
-                                    f'Error values ({len(es)} in total):\n'
+            QMessageBox.information(self, '异常值信息',
+                                    f'异常值如下所示 (共计{len(es)}个):\n'
                                     f'{os.linesep.join(map(str, sorted(es)))}')
 
         self.button_show_errors.clicked.connect(_click)
