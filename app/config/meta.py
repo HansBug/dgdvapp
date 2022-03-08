@@ -7,7 +7,7 @@ Overview:
 __TITLE__ = "dgdvapp"
 
 #: Version of this project.
-__VERSION__ = "0.1.3"
+__VERSION__ = "0.1.4"
 
 #: Short description of the project, will be included in ``setup.py``.
 __DESCRIPTION__ = 'Demo Application of PyQt5.'
