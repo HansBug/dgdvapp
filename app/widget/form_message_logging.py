@@ -53,6 +53,7 @@ class FormMessageLogging(QWidget, UIFormMessageLogging):
                     participants = sorted(receivers | senders)
 
                     model = QStandardItemModel(0, 1)
+                    model.setHorizontalHeaderLabels(["参与者列表"])
                     for p in participants:
                         item = QStandardItem(str(p))
                         item.setData(p)
@@ -156,7 +157,7 @@ class FormMessageLogging(QWidget, UIFormMessageLogging):
 
     def _init_table_messages(self):
         model = QStandardItemModel(0, 4)
-        model.setHorizontalHeaderLabels(['time', 'send_id', 'receive_id', 'type'])
+        model.setHorizontalHeaderLabels(['发送时间', '发送者ID', '接受者ID', '发送状态'])
         self.table_messages.setModel(model)
 
     def _init_button_logging(self):
@@ -219,7 +220,7 @@ class FormMessageLogging(QWidget, UIFormMessageLogging):
             self.table_messages.setProperty('data', dfc)
 
             model = QStandardItemModel(0, 4)
-            model.setHorizontalHeaderLabels(['time', 'send_id', 'receive_id', 'type'])
+            model.setHorizontalHeaderLabels(['发送时间', '发送者ID', '接受者ID', '发送状态'])
             self.table_messages.setModel(model)
 
             def _init(total):

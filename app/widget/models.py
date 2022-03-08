@@ -54,7 +54,14 @@ class NameStatus(IntEnum):
 
     @property
     def text(self):
-        return self.name.lower().capitalize()
+        if self == self.NOTHING:
+            return "不参与运算"
+        elif self == self.INDEPENDENT:
+            return "自变量"
+        elif self == self.DEPENDENT:
+            return "因变量"
+        else:
+            raise ValueError(f'Unknown status - {repr(self)}.')
 
     @property
     def icon(self) -> QIcon:
@@ -87,7 +94,12 @@ class DependentNameStatus(IntEnum):
 
     @property
     def text(self):
-        return self.name.lower().capitalize()
+        if self == self.NOTHING:
+            return "不参与运算"
+        elif self == self.DEPENDENT:
+            return "因变量"
+        else:
+            raise ValueError(f'Unknown status - {repr(self)}.')
 
     @property
     def icon(self) -> QIcon:
@@ -117,7 +129,14 @@ class MessageType(IntEnum):
 
     @property
     def text(self):
-        return self.name.lower().capitalize()
+        if self == self.PENDING:
+            return "正在发送"
+        elif self == self.FAILED:
+            return "发送失败"
+        elif self == self.SUCCESS:
+            return "发送成功"
+        else:
+            raise ValueError(f'Unknown status - {repr(self)}.')
 
     @property
     def icon(self) -> QIcon:
