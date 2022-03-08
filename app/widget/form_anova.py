@@ -64,7 +64,7 @@ class FormANOVA(QWidget, UIFormANOVA):
     def _init_open_csv(self):
         def _open():
             filename, _ = QFileDialog.getOpenFileName(
-                self, 'Load Data', filter='*.csv', initialFilter='*.csv')
+                self, '加载数据', filter='*.csv', initialFilter='*.csv')
             if filename:
                 df = pd.read_csv(filename)
 
@@ -86,14 +86,14 @@ class FormANOVA(QWidget, UIFormANOVA):
                 self.table_data.setSortingEnabled(True)
 
                 d_model = QStandardItemModel(0, 1)
-                d_model.setHorizontalHeaderLabels(['Independent'])
+                d_model.setHorizontalHeaderLabels(['自变量'])
                 self.table_independents.setModel(d_model)
                 self.button_ind_add.setEnabled(True)
                 self.button_ind_del.setEnabled(False)
                 self.button_ind_clear.setEnabled(True)
 
                 ind_model = QStandardItemModel(0, 2)
-                ind_model.setHorizontalHeaderLabels(['Dependent', 'Status'])
+                ind_model.setHorizontalHeaderLabels(['因变量', '状态'])
                 for name in names:
                     item_name = QStandardItem(name)
                     item_name.setEditable(False)
@@ -106,13 +106,13 @@ class FormANOVA(QWidget, UIFormANOVA):
                 self.table_dependents.setModel(ind_model)
 
                 self.button_analysis.setEnabled(True)
-                QMessageBox.information(self, 'Load Data', 'Completed!')
+                QMessageBox.information(self, '加载数据', '加载完毕')
 
         self.button_open.clicked.connect(_open)
 
     def _init_table_independent(self):
         d_model = QStandardItemModel(0, 1)
-        d_model.setHorizontalHeaderLabels(['Independent'])
+        d_model.setHorizontalHeaderLabels(['自变量'])
         self.table_independents.setModel(d_model)
         self.table_independents.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
 
@@ -134,7 +134,7 @@ class FormANOVA(QWidget, UIFormANOVA):
         def _add():
             names = self.table_data.property('names')
             chosen, ok = DialogMultipleChoice.get_chosen(
-                self, 'Add Dependent', 'Selection of dependent (no less than 1 column)',
+                self, '添加自变量', '请选择自变量 (至少选择一项，且不可与现有自变量重复)',
                 names, _no_less_than_1,
             )
             if ok:
@@ -164,10 +164,10 @@ class FormANOVA(QWidget, UIFormANOVA):
 
     def _init_ind_clear(self):
         def _clear():
-            if QMessageBox.warning(self, 'Clear All Dependents',
-                                   'All dependents will be cleared, continue?') == QMessageBox.Ok:
+            if QMessageBox.warning(self, '清除所有自变量',
+                                   '所有自变量将被清除，是否继续？') == QMessageBox.Ok:
                 d_model = QStandardItemModel(0, 1)
-                d_model.setHorizontalHeaderLabels(['Dependent'])
+                d_model.setHorizontalHeaderLabels(['自变量'])
                 self.table_independents.setModel(d_model)
                 self.button_ind_del.setEnabled(False)
 
@@ -177,7 +177,7 @@ class FormANOVA(QWidget, UIFormANOVA):
 
     def _init_table_dependent(self):
         model = QStandardItemModel(0, 2)
-        model.setHorizontalHeaderLabels(['Dependent', 'Status'])
+        model.setHorizontalHeaderLabels(['因变量', '状态'])
         self.table_dependents.setModel(model)
 
         def _dbl_click(index: QModelIndex):
@@ -304,7 +304,7 @@ class FormANOVA(QWidget, UIFormANOVA):
                     item.setBackground(QBrush(QColor(_color(pr))))
                     if anova_result is not None:
                         item.setToolTip(f'{dep} ~ {indep}\n'
-                                        f'valid / total: {valid_rows} / {total_rows}\n'
+                                        f'有效 / 总量: {valid_rows} / {total_rows}\n'
                                         f'df: {anova_result["df"][i]}\n'
                                         f'sum_sq: {anova_result["sum_sq"][i]}\n'
                                         f'mean_sq: {anova_result["mean_sq"][i]}\n'
@@ -312,15 +312,15 @@ class FormANOVA(QWidget, UIFormANOVA):
                                         f'PR(>F): {anova_result["PR(>F)"][i]}')
                     else:
                         item.setToolTip(f'{dep} ~ {indep}\n'
-                                        f'valid / total: {valid_rows} / {total_rows}\n'
-                                        f'Invalid ANOVA result.')
+                                        f'有效 / 总量: {valid_rows} / {total_rows}\n'
+                                        f'方差分析结果非法')
                     model.setItem(i, j, item)
 
             def _deinit(total):
                 self.button_analysis.setEnabled(True)
                 self.button_export.setEnabled(True)
                 self.__lock.release()
-                QMessageBox.information(self, 'Analysis', 'Completed!')
+                QMessageBox.information(self, '数据分析', '分析完毕！')
 
             _thread = _AnalysisThread(self, independents, dependents,
                                       model, df, names)
@@ -336,7 +336,7 @@ class FormANOVA(QWidget, UIFormANOVA):
         def _export():
             with self.__lock:
                 filename, _ = QFileDialog.getSaveFileName(
-                    self, 'Export Analysis', filter='*.csv', initialFilter='*.csv')
+                    self, '分析结果导出', filter='*.csv', initialFilter='*.csv')
                 if filename:
                     self.button_analysis.setEnabled(False)
                     self.button_export.setEnabled(False)
@@ -357,6 +357,6 @@ class FormANOVA(QWidget, UIFormANOVA):
 
                     self.button_analysis.setEnabled(True)
                     self.button_export.setEnabled(True)
-                    QMessageBox.information(self, 'Export Analysis', 'Completed!')
+                    QMessageBox.information(self, '分析结果导出', '导出完毕！')
 
         self.button_export.clicked.connect(_export)
