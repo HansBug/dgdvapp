@@ -39,7 +39,7 @@ class FormLogProcess(QWidget, UIFormLogProcess):
                 try:
                     self.label_path.setText(directory)
                     model = QStandardItemModel(0, 2)
-                    model.setHorizontalHeaderLabels(['Path', 'Status'])
+                    model.setHorizontalHeaderLabels(['路径', '状态'])
 
                     cnt = 0
                     for p in walk_log_directories(directory):
@@ -108,7 +108,7 @@ class FormLogProcess(QWidget, UIFormLogProcess):
             status.setText(processing.text)
             status.setIcon(processing.icon)
             model.setItem(i, 1, status)
-            self.label_status.setText(f'Running - {repr(i + 1)} / {repr(total_count)} ...')
+            self.label_status.setText(f'正在处理 - {repr(i + 1)} / {repr(total_count)} ...')
 
         def _after_loop(i, total_count, model):
             status = model.item(i, 1)
@@ -119,11 +119,11 @@ class FormLogProcess(QWidget, UIFormLogProcess):
             self.progress_status.setValue(i + 1)
 
         def _deinit(total_count):
-            self.label_status.setText('Completed.')
+            self.label_status.setText('已完成')
             self.button_open.setEnabled(True)
             self.button_start.setEnabled(True)
             self.table_processing.setSortingEnabled(True)
-            QMessageBox.information(self, 'Log Processing', 'Completed!')
+            QMessageBox.information(self, '日志数据处理', '处理完毕！')
 
         def _process():
             directory = self.table_processing.property('directory')

@@ -97,7 +97,7 @@
     </rect>
    </property>
    <property name="text">
-    <string>(no path)</string>
+    <string>(暂无路径)</string>
    </property>
   </widget>
  </widget>

@@ -16,7 +16,18 @@ class ProcessingStatus(IntEnum):
 
     @property
     def text(self):
-        return self.name.lower().capitalize()
+        if self == self.PENDING:
+            return "待处理"
+        elif self == self.WAITING:
+            return "等待中"
+        elif self == self.PROCESSING:
+            return "正在处理"
+        elif self == self.COMPLETED:
+            return "处理完毕"
+        elif self == self.ERROR:
+            return "处理失败"
+        else:
+            raise ValueError(f'Unknown status - {repr(self)}.')
 
     @property
     def icon(self) -> QIcon:
