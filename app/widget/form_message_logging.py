@@ -6,7 +6,6 @@ import pandas as pd
 from PyQt5.Qt import QWidget, Qt, QFileDialog, QStandardItemModel, QStandardItem, QMessageBox, QPoint, QMenu, QAction, \
     QModelIndex, QThread, pyqtSignal, QColor
 from hbutils.color import Color, rnd_colors
-from hbutils.string import plural_word
 
 from .models import MessageType
 from ..process import msgdata_trans
@@ -39,10 +38,10 @@ class FormMessageLogging(QWidget, UIFormMessageLogging):
     def _init_button_open(self):
         def _open():
             filename, _ = QFileDialog.getOpenFileName(
-                self, 'Open Message Log',
-                filter='Message Data File (msgData*.dat);;'
-                       'All Data File (*.data)',
-                initialFilter='Message Data File (msgData*.dat)'
+                self, '打开消息日志文件',
+                filter='消息日志文件 (msgData*.dat);;'
+                       '其他数据文件 (*.data)',
+                initialFilter='消息日志文件 (msgData*.dat)'
             )
             if filename:
                 with self.__lock:
@@ -100,10 +99,9 @@ class FormMessageLogging(QWidget, UIFormMessageLogging):
                         self.edit_end_time.setText('')
 
                     self.setProperty('data', df)
-                    QMessageBox.information(self, 'Open Message Log',
-                                            f'Completed!\n'
-                                            f'{plural_word(rows, "record")} and '
-                                            f'{plural_word(len(participants), "participant")} detected.')
+                    QMessageBox.information(self, '打开消息日志文件',
+                                            f'加载完毕!\n'
+                                            f'已检测并加载{rows}条消息，包含{len(participants)}个参与实体。')
 
         self.button_open.clicked.connect(_open)
 
@@ -123,11 +121,11 @@ class FormMessageLogging(QWidget, UIFormMessageLogging):
                     item_.setCheckState(state)
                     model_.setItem(i, 0, item_)
 
-            action_select_all = QAction('&Select all', menu)
+            action_select_all = QAction('全选(&A)', menu)
             action_select_all.triggered.connect(lambda: _set_all_state(Qt.Checked))
             menu.addAction(action_select_all)
 
-            action_unselect_all = QAction('&Unselect all', menu)
+            action_unselect_all = QAction('全不选(&D)', menu)
             action_unselect_all.triggered.connect(lambda: _set_all_state(Qt.Unchecked))
             menu.addAction(action_unselect_all)
 
@@ -260,7 +258,7 @@ class FormMessageLogging(QWidget, UIFormMessageLogging):
             def _deinit(total):
                 self.button_export.setEnabled(True)
                 self.__lock.release()
-                QMessageBox.information(self, 'Message Logging', f'Completed!\n{plural_word(total, "record")} loaded.')
+                QMessageBox.information(self, '消息日志查询', f'查询完毕!\n共计{total}条消息已被加载。')
                 self.progress_status.setVisible(False)
 
             thread = _LoggingThread(self, dfc)
@@ -277,13 +275,13 @@ class FormMessageLogging(QWidget, UIFormMessageLogging):
     def _init_button_export(self):
         def _export():
             dfc: pd.DataFrame = self.table_messages.property('data')
-            filename, _ = QFileDialog.getSaveFileName(self, 'Message Export',
+            filename, _ = QFileDialog.getSaveFileName(self, '消息日志导出',
                                                       filter='*.csv', initialFilter='*.csv')
             if filename:
                 with self.__lock:
                     dfc.to_csv(filename)
-                    QMessageBox.information(self, 'Message Export',
-                                            f'Completed!\n'
-                                            f'{plural_word(len(dfc), "record")} exported.')
+                    QMessageBox.information(self, '消息日志导出',
+                                            f'导出完毕!\n'
+                                            f'已导出共计{len(dfc)}条消息。')
 
         self.button_export.clicked.connect(_export)
