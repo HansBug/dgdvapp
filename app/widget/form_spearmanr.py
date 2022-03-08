@@ -41,7 +41,7 @@ class FormSpearmanr(QWidget, UIFormSpearmanr):
     def _init_open_csv(self):
         def _open():
             filename, _ = QFileDialog.getOpenFileName(
-                self, 'Load Data', filter='*.csv', initialFilter='*.csv')
+                self, '加载数据', filter='*.csv', initialFilter='*.csv')
             if filename:
                 df = pd.read_csv(filename)
 
@@ -62,7 +62,7 @@ class FormSpearmanr(QWidget, UIFormSpearmanr):
                 self.table_data.setSortingEnabled(True)
 
                 names_model = QStandardItemModel(m, 2)
-                names_model.setHorizontalHeaderLabels(['Name', 'Status'])
+                names_model.setHorizontalHeaderLabels(['字段名称', '状态'])
                 for i in range(m):
                     item_name = QStandardItem(str(names[i]))
                     item_name.setEditable(False)
@@ -77,13 +77,13 @@ class FormSpearmanr(QWidget, UIFormSpearmanr):
                 self.table_items.setModel(names_model)
                 self.button_analysis.setEnabled(True)
 
-                QMessageBox.information(self, 'Load Data', 'Completed!')
+                QMessageBox.information(self, '加载数据', '数据加载完毕！')
 
         self.button_open.clicked.connect(_open)
 
     def _init_table_items(self):
         names_model = QStandardItemModel(0, 2)
-        names_model.setHorizontalHeaderLabels(['Name', 'Status'])
+        names_model.setHorizontalHeaderLabels(['字段名称', '状态'])
         self.table_items.setModel(names_model)
 
         def _dbl_click(index: QModelIndex):
@@ -186,9 +186,9 @@ class FormSpearmanr(QWidget, UIFormSpearmanr):
             item.setFlags(Qt.ItemIsEnabled)
             item.setBackground(QBrush(QColor(_color_choose(rho))))
             item.setToolTip(f'{xname} -> {yname}:\n'
-                            f'rho: {rho}\n'
-                            f'pval: {pval}\n'
-                            f'valid / total: {valid_rows} / {total_rows}')
+                            f'相关系数: {rho}\n'
+                            f'p值: {pval}\n'
+                            f'有效 / 总量: {valid_rows} / {total_rows}')
             model.setItem(xi, yi, item)
 
         # noinspection PyUnusedLocal
@@ -196,7 +196,7 @@ class FormSpearmanr(QWidget, UIFormSpearmanr):
             self.button_analysis.setEnabled(True)
             self.button_export.setEnabled(True)
             self.__lock.release()
-            QMessageBox.information(self, 'Analysis', 'Completed!')
+            QMessageBox.information(self, '数据分析', '数据分析完毕！')
 
         # noinspection PyUnresolvedReferences
         def _analysis():
@@ -216,7 +216,7 @@ class FormSpearmanr(QWidget, UIFormSpearmanr):
         def _export():
             with self.__lock:
                 filename, _ = QFileDialog.getSaveFileName(
-                    self, 'Export Analysis', filter='*.csv', initialFilter='*.csv')
+                    self, '导出分析结果', filter='*.csv', initialFilter='*.csv')
                 if filename:
                     self.button_analysis.setEnabled(False)
                     self.button_export.setEnabled(False)
@@ -232,6 +232,6 @@ class FormSpearmanr(QWidget, UIFormSpearmanr):
 
                     self.button_analysis.setEnabled(True)
                     self.button_export.setEnabled(True)
-                    QMessageBox.information(self, 'Export Analysis', 'Completed!')
+                    QMessageBox.information(self, '导出分析结果', '导出完毕！')
 
         self.button_export.clicked.connect(_export)
