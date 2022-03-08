@@ -192,12 +192,12 @@ class FormGenerate(QWidget, UIFormGenerate):
 
         def _edit_perception():
             current_items = self.perceptions
-            result_str, result_ok = QInputDialog.getMultiLineText(self, 'Edit Perceptions', 'Update new perceptions:',
+            result_str, result_ok = QInputDialog.getMultiLineText(self, '修改Perception值', '请输入新值:',
                                                                   os.linesep.join(current_items))
             if result_ok:
                 items = natsorted(filter(bool, map(str.strip, result_str.splitlines())))
                 _save_items(items, lambda invalid: QMessageBox.information(
-                    self, 'Edit Perceptions', f'Invalid perception - {repr(invalid)}.'))
+                    self, '修改Perception值', f'非法perception值 - {repr(invalid)}.'))
 
         _button_edit = QToolButton(self)
         _button_edit.setFixedHeight(self.edit_perception.height())
@@ -241,11 +241,11 @@ class FormGenerate(QWidget, UIFormGenerate):
         def _edit_lost_possibility():
             current_items = self.lost_possibilities
             result_str, result_ok = QInputDialog.getMultiLineText(
-                self, 'Edit Lost Possibilities', 'Update new lost_possibilities:', os.linesep.join(current_items))
+                self, '修改Lost Possibilities值', '请输入新lost_possibilities值:', os.linesep.join(current_items))
             if result_ok:
                 items = natsorted(filter(bool, map(str.strip, result_str.splitlines())))
                 _save_items(items, lambda invalid: QMessageBox.information(
-                    self, 'Edit Lost Possibilities', f'Invalid lost possibility - {repr(invalid)}.'))
+                    self, '修改Lost Possibilities值', f'非法lost possibility值 - {repr(invalid)}.'))
 
         _button_edit = QToolButton(self)
         _button_edit.setFixedHeight(self.edit_lost_possibility.height())
@@ -269,8 +269,8 @@ class FormGenerate(QWidget, UIFormGenerate):
             data: list = table.property('data')
             item_str_lines = data[row]['time']
             time_str, time_ok = QInputDialog.getMultiLineText(
-                self, 'Edit Item Time',
-                'Edit the times of control:', os.linesep.join(item_str_lines)
+                self, '修改指令时间',
+                '请编辑指令时间 (每行一条，不小于0):', os.linesep.join(item_str_lines)
             )
 
             if time_ok:
@@ -287,8 +287,8 @@ class FormGenerate(QWidget, UIFormGenerate):
             data: list = table.property('data')
             control_lines = data[row]['control']
             control_str, control_ok = QInputDialog.getMultiLineText(
-                self, 'Edit Item Control',
-                'Input the control items (gap,type,R1,R2,R3):',
+                self, '修改控制指令',
+                '请修改控制指令 (依次为gap,type,R1,R2,R3，用英文逗号分隔，每行一条):',
                 os.linesep.join([','.join(ld) for ld in control_lines])
             )
 
@@ -300,8 +300,8 @@ class FormGenerate(QWidget, UIFormGenerate):
                         gap, type_, r1, r2, r3 = map(str.strip, line.split(',', maxsplit=4))
                     except ValueError:
                         QMessageBox.critical(
-                            self, 'Add Control Item',
-                            f'Invalid control as line {repr(lineno)} - {repr(line)}.'
+                            self, '添加控制指令',
+                            f'第{repr(lineno)}行指令信息非法 - {repr(line)}.'
                         )
                         return
                     else:
@@ -320,7 +320,7 @@ class FormGenerate(QWidget, UIFormGenerate):
             elif column == 1:
                 _edit_item_control(row)
             else:
-                raise ValueError(f'Invalid column - {repr(column)}.')
+                raise ValueError(f'非法行信息 - {repr(column)}.')
 
         table.cellDoubleClicked.connect(_edit_cell)
 
@@ -352,7 +352,7 @@ class FormGenerate(QWidget, UIFormGenerate):
                 v = int(tstr)
                 assert 0 <= v
             except (ValueError, AssertionError):
-                QMessageBox.critical(self, 'Add Control Item', f'Invalid time - {repr(tstr)}.')
+                QMessageBox.critical(self, '添加控制指令', f'非法时间信息 - {repr(tstr)}.')
                 return None
             else:
                 return tstr
@@ -366,12 +366,12 @@ class FormGenerate(QWidget, UIFormGenerate):
             return time_items
 
         def _add_new_item():
-            time_str, time_ok = QInputDialog.getMultiLineText(self, 'Add Control Item', 'Input the times of control:')
+            time_str, time_ok = QInputDialog.getMultiLineText(self, '添加控制指令', '请输入指令时间 (每行一条，不小于0):')
             if time_ok and _validate_timelines(time_str) is not None:
                 time_items = _validate_timelines(time_str)
                 control_str, control_ok = QInputDialog.getMultiLineText(
-                    self, 'Add Control Item',
-                    'Input the control items (gap,type,R1,R2,R3):'
+                    self, '添加控制指令',
+                    '请输入控制指令 (依次为gap,type,R1,R2,R3，用英文逗号分隔，每行一条):'
                 )
                 if control_ok:
                     control_lines = filter(bool, map(str.strip, control_str.splitlines()))
@@ -381,8 +381,8 @@ class FormGenerate(QWidget, UIFormGenerate):
                             gap, type_, r1, r2, r3 = map(str.strip, line.split(',', maxsplit=4))
                         except ValueError:
                             QMessageBox.critical(
-                                self, 'Add Control Item',
-                                f'Invalid control as line {repr(lineno)} - {repr(line)}.'
+                                self, '添加控制指令',
+                                f'第{repr(lineno)}行指令信息非法 - {repr(line)}.'
                             )
                             return
                         else:
@@ -394,8 +394,8 @@ class FormGenerate(QWidget, UIFormGenerate):
             row = item.row()
             data: list = table.property('data')
             if QMessageBox.warning(
-                    self, 'Delete Control Item',
-                    f'Control item {repr(row)} will be removed, continue?',
+                    self, '删除指令信息',
+                    f'第{repr(row)}行指令信息将被删除，是否继续？',
                     QMessageBox.Ok | QMessageBox.Cancel,
             ) == QMessageBox.Ok:
                 data.pop(row)
@@ -407,8 +407,8 @@ class FormGenerate(QWidget, UIFormGenerate):
         def _clear_all_items():
             data: list = table.property('data')
             if QMessageBox.warning(
-                    self, 'Clear all items',
-                    f'All control items will be cleared, continue?',
+                    self, '删除全部指令信息',
+                    f'全部指令信息将被删除，是否继续？',
                     QMessageBox.Ok | QMessageBox.Cancel
             ) == QMessageBox.Ok:
                 data.clear()
@@ -423,17 +423,17 @@ class FormGenerate(QWidget, UIFormGenerate):
 
             if item is not None:
                 row = item.row()
-                action_del_item = QAction(qta.icon('msc.remove'), f'&Delete control item {repr(row)}', menu)
+                action_del_item = QAction(qta.icon('msc.remove'), f'删除第{repr(row)}条指令信息(&D)', menu)
                 action_del_item.triggered.connect(lambda: _del_one_item(item))
                 menu.addAction(action_del_item)
 
                 menu.addSeparator()
 
-            action_add_item = QAction(qta.icon('msc.add'), '&Add new control item', menu)
+            action_add_item = QAction(qta.icon('msc.add'), '添加新指令信息(&A)', menu)
             action_add_item.triggered.connect(_add_new_item)
             menu.addAction(action_add_item)
 
-            action_clear = QAction(qta.icon('msc.clear-all'), '&Clear all items', menu)
+            action_clear = QAction(qta.icon('msc.clear-all'), '删除全部指令信息(&C)', menu)
             action_clear.triggered.connect(_clear_all_items)
             menu.addAction(action_clear)
 
@@ -510,7 +510,7 @@ class FormGenerate(QWidget, UIFormGenerate):
         )
 
         def _export_to_csv():
-            filename, _ = QFileDialog.getSaveFileName(self, 'Export Result to CSV', filter='*.csv')
+            filename, _ = QFileDialog.getSaveFileName(self, '将结果导出为CSV表格', filter='*.csv')
             if filename:
                 n, m = table.rowCount(), table.columnCount()
                 data = [[table.horizontalHeaderItem(i).text() for i in range(m)]]
@@ -522,12 +522,12 @@ class FormGenerate(QWidget, UIFormGenerate):
                     for line in data:
                         writer.writerow(line)
 
-                QMessageBox.information(self, 'Export Result to CSV', f'Exported to {repr(filename)}.')
+                QMessageBox.information(self, '将结果导出为CSV表格', f'已经导出至{repr(filename)}')
 
         def _show_menu(curpos: QPoint):
             menu = QMenu(table)
 
-            action_export = QAction(qta.icon('msc.export'), '&Export to csv', menu)
+            action_export = QAction(qta.icon('msc.export'), '导出结果(&E)...', menu)
             action_export.triggered.connect(_export_to_csv)
             menu.addAction(action_export)
 
@@ -606,12 +606,12 @@ class FormGenerate(QWidget, UIFormGenerate):
                     values=values, names=names,
                 )
             else:
-                raise ValueError(f'Invalid method - {repr(method)}.')
+                raise ValueError(f'非法方法 - {repr(method)}.')
 
             def _init_table(ns):
                 result.setRowCount(0)
                 self._table_result_set_title(table_title)
-                self.label_status.setText(f'Initialized...')
+                self.label_status.setText(f'初始化完毕...')
 
             def _new_result(inx, pi):
                 vs = [
@@ -625,11 +625,11 @@ class FormGenerate(QWidget, UIFormGenerate):
                     vs += cvalue
 
                 self._table_result_add_line(vs)
-                self.label_status.setText(f'{plural_word(inx, "result")} generated...')
+                self.label_status.setText(f'已经产生{inx}条结果...')
 
             def _completed(cnt):
-                QMessageBox.information(self, 'Result Generation', f'{plural_word(cnt, "result")} generated!')
-                self.label_status.setText(f'Completed.')
+                QMessageBox.information(self, '测试数据生成', f'总计{cnt}条测试数据，已生成完毕！')
+                self.label_status.setText(f'已完成')
 
             g = _GenerateThread(self, generator)
             g.init_table.connect(_init_table, Qt.QueuedConnection)
@@ -638,10 +638,10 @@ class FormGenerate(QWidget, UIFormGenerate):
             g.start()
 
         menu = QMenu(button)
-        action_use_matrix = QAction("Use &Matrix Mode", menu)
+        action_use_matrix = QAction("使用笛卡尔积策略生成(&M)", menu)
         action_use_matrix.triggered.connect(lambda: _generate(GenerateMethod.MATRIX))
         menu.addAction(action_use_matrix)
-        action_use_matrix = QAction("Use &AETG Mode", menu)
+        action_use_matrix = QAction("使用AETG算法生成(&A)", menu)
         action_use_matrix.triggered.connect(lambda: _generate(GenerateMethod.AETG))
         menu.addAction(action_use_matrix)
 
