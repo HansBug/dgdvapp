@@ -38,7 +38,7 @@ class FormScatter(QWidget, UIFormScatter):
     def _init_button_open(self):
         def _open():
             filename, _ = QFileDialog.getOpenFileName(
-                self, 'Load Data', filter='*.csv', initialFilter='*.csv')
+                self, '加载数据', filter='*.csv', initialFilter='*.csv')
             if filename:
                 with self.__lock:
                     self.button_open.setEnabled(False)
@@ -82,7 +82,7 @@ class FormScatter(QWidget, UIFormScatter):
                     graph = self.widget_graph.property('graph')
                     if graph is not None:
                         graph.deleteLater()
-                    QMessageBox.information(self, 'Load Data', 'Completed!')
+                    QMessageBox.information(self, '加载数据', '数据加载完毕！')
 
         self.button_open.clicked.connect(_open)
 
@@ -151,12 +151,12 @@ class FormScatter(QWidget, UIFormScatter):
                 w1.addItem(s1)
 
                 self.tabs_pages.setCurrentIndex(1)
-                self.label_valid_total.setText(f'valid / total: {len(dfc)} / {len(df)}')
+                self.label_valid_total.setText(f'有效 / 总量: {len(dfc)} / {len(df)}')
                 model = QStandardItemModel(0, 2)
                 model.setHorizontalHeaderLabels([xname, yname])
                 self.table_selected.setModel(model)
                 self.button_export.setEnabled(True)
-                QMessageBox.information(self, 'Display Scatter', 'Completed!')
+                QMessageBox.information(self, '散点图显示', '显示完毕！')
 
         self.button_display.clicked.connect(_click)
 
@@ -181,18 +181,18 @@ class FormScatter(QWidget, UIFormScatter):
                 view: pg.GraphicsLayoutWidget = self.widget_graph.property('graph')
 
                 filename, filter_ = QFileDialog.getSaveFileName(
-                    self, 'Export Image',
-                    filter='SVG Image (*.svg);;PNG Image (*.png)',
-                    initialFilter='SVG Image (*.svg)',
+                    self, '图像导出',
+                    filter='SVG矢量图片 (*.svg);;PNG图片 (*.png)',
+                    initialFilter='SVG矢量图片 (*.svg)',
                 )
                 if 'svg' in filter_:
                     exporter = pg.exporters.SVGExporter(view.scene())
                 elif 'png' in filter_:
                     exporter = pg.exporters.ImageExporter(view.scene())
                 else:
-                    raise ValueError(f'Invalid filter - {filter_}.')
+                    raise ValueError(f'无法识别的文件格式 - {filter_}.')
 
                 exporter.export(filename)
-                QMessageBox.information(self, 'Export Image', 'Completed!')
+                QMessageBox.information(self, '图像导出', '图像导出完毕！')
 
         self.button_export.clicked.connect(_export)

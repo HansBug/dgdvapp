@@ -215,7 +215,7 @@
        </rect>
       </property>
       <property name="text">
-       <string>valid / total: </string>
+       <string>有效 / 总量: </string>
       </property>
      </widget>
      <widget class="QTableView" name="table_selected">
