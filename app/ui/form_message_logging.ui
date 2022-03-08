@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Message Logging</string>
+   <string>日志消息查询</string>
   </property>
   <widget class="QSlider" name="slider_start_time">
    <property name="enabled">
@@ -70,7 +70,7 @@
     </rect>
    </property>
    <property name="text">
-    <string>&amp;Open...</string>
+    <string>打开...</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+O</string>
@@ -134,7 +134,7 @@
     </rect>
    </property>
    <property name="text">
-    <string>Start Time</string>
+    <string>开始时间</string>
    </property>
    <property name="alignment">
     <set>Qt::AlignCenter</set>
@@ -150,7 +150,7 @@
     </rect>
    </property>
    <property name="text">
-    <string>End Time</string>
+    <string>结束时间</string>
    </property>
    <property name="alignment">
     <set>Qt::AlignCenter</set>
@@ -179,7 +179,7 @@
     </rect>
    </property>
    <property name="text">
-    <string>&amp;Logging</string>
+    <string>查询消息</string>
    </property>
   </widget>
   <widget class="QPushButton" name="button_export">
@@ -195,7 +195,7 @@
     </rect>
    </property>
    <property name="text">
-    <string>&amp;Export</string>
+    <string>消息导出</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+S</string>

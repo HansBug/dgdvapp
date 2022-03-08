@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Metrics Calculation</string>
+   <string>日志指标计算</string>
   </property>
   <widget class="QTableView" name="table_result">
    <property name="geometry">
@@ -33,7 +33,7 @@
     </rect>
    </property>
    <property name="text">
-    <string>&amp;Open...</string>
+    <string>打开...</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+O</string>
@@ -52,7 +52,7 @@
     </rect>
    </property>
    <property name="text">
-    <string>&amp;Start</string>
+    <string>开始计算</string>
    </property>
    <property name="shortcut">
     <string>Return</string>
@@ -68,7 +68,7 @@
     </rect>
    </property>
    <property name="text">
-    <string>Completed.</string>
+    <string>已完成</string>
    </property>
    <property name="alignment">
     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -113,7 +113,7 @@
     </rect>
    </property>
    <property name="text">
-    <string>&amp;Export</string>
+    <string>结果导出</string>
    </property>
   </widget>
   <widget class="QListWidget" name="list_metrics">

@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Box Plot</string>
+   <string>箱图分布可视化</string>
   </property>
   <widget class="QTabWidget" name="tabs_pages">
    <property name="geometry">
@@ -23,11 +23,11 @@
     </rect>
    </property>
    <property name="currentIndex">
-    <number>1</number>
+    <number>0</number>
    </property>
    <widget class="QWidget" name="tab_data">
     <attribute name="title">
-     <string>Data</string>
+     <string>数据</string>
     </attribute>
     <widget class="QTableView" name="table_data">
      <property name="geometry">
@@ -49,7 +49,7 @@
       </rect>
      </property>
      <property name="text">
-      <string>&amp;Open...</string>
+      <string>打开...</string>
      </property>
      <property name="shortcut">
       <string>Ctrl+O</string>
@@ -58,7 +58,7 @@
    </widget>
    <widget class="QWidget" name="tab_display">
     <attribute name="title">
-     <string>Display</string>
+     <string>可视化面板</string>
     </attribute>
     <widget class="QPushButton" name="button_export">
      <property name="enabled">
@@ -73,7 +73,7 @@
       </rect>
      </property>
      <property name="text">
-      <string>&amp;Export</string>
+      <string>图像导出</string>
      </property>
      <property name="shortcut">
       <string>Ctrl+S</string>
@@ -102,7 +102,7 @@
       </rect>
      </property>
      <property name="title">
-      <string>Display Options</string>
+      <string>可视化选项</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>
@@ -120,7 +120,7 @@
        </rect>
       </property>
       <property name="text">
-       <string>&amp;Display</string>
+       <string>显示</string>
       </property>
       <property name="shortcut">
        <string>Return</string>
@@ -155,7 +155,7 @@
        </rect>
       </property>
       <property name="text">
-       <string>X Axis :</string>
+       <string>X轴 :</string>
       </property>
      </widget>
      <widget class="QComboBox" name="combo_y">
@@ -181,7 +181,7 @@
        </rect>
       </property>
       <property name="text">
-       <string>Y Axis :</string>
+       <string>Y轴 :</string>
       </property>
      </widget>
      <zorder>label_x</zorder>
@@ -200,7 +200,7 @@
       </rect>
      </property>
      <property name="title">
-      <string>Information</string>
+      <string>数据信息</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>
@@ -215,7 +215,7 @@
        </rect>
       </property>
       <property name="text">
-       <string>valid / total: </string>
+       <string>有效 / 总量: </string>
       </property>
      </widget>
      <widget class="QLabel" name="label_max">
@@ -228,7 +228,7 @@
        </rect>
       </property>
       <property name="text">
-       <string>Maximum: </string>
+       <string>最大值: </string>
       </property>
      </widget>
      <widget class="QLabel" name="label_min">
@@ -241,7 +241,7 @@
        </rect>
       </property>
       <property name="text">
-       <string>Minimum: </string>
+       <string>最小值: </string>
       </property>
      </widget>
      <widget class="QLabel" name="label_mean">
@@ -254,7 +254,7 @@
        </rect>
       </property>
       <property name="text">
-       <string>Mean: </string>
+       <string>均值: </string>
       </property>
      </widget>
      <widget class="QLabel" name="label_std">
@@ -267,7 +267,7 @@
        </rect>
       </property>
       <property name="text">
-       <string>Std Dev.: </string>
+       <string>标准差: </string>
       </property>
      </widget>
      <widget class="QLabel" name="label_qs">
@@ -280,7 +280,7 @@
        </rect>
       </property>
       <property name="text">
-       <string>q1 / q2 / q3: </string>
+       <string>一分 / 二分 / 三分: </string>
       </property>
      </widget>
      <widget class="QLabel" name="label_bound">
@@ -293,7 +293,7 @@
        </rect>
       </property>
       <property name="text">
-       <string>Lower / Upper: </string>
+       <string>下界 / 上界: </string>
       </property>
      </widget>
      <widget class="QLabel" name="label_errors">
@@ -306,7 +306,7 @@
        </rect>
       </property>
       <property name="text">
-       <string>Error values:</string>
+       <string>异常值数量:</string>
       </property>
      </widget>
      <widget class="QLabel" name="label_x_value">
@@ -319,7 +319,7 @@
        </rect>
       </property>
       <property name="text">
-       <string>&lt;x&gt;: </string>
+       <string>x值: </string>
       </property>
      </widget>
      <widget class="QPushButton" name="button_show_errors">
@@ -335,7 +335,7 @@
        </rect>
       </property>
       <property name="text">
-       <string>Show Errors</string>
+       <string>异常值...</string>
       </property>
      </widget>
     </widget>

@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Generation &amp; Visualization</string>
+   <string>测试数据生成与分析工具</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <widget class="QMdiArea" name="mdi_area">
@@ -39,7 +39,7 @@
    </property>
    <widget class="QMenu" name="menu_feature">
     <property name="title">
-     <string>特性(&amp;F)</string>
+     <string>功能(&amp;F)</string>
     </property>
     <addaction name="action_data_generation"/>
     <addaction name="separator"/>
@@ -65,12 +65,12 @@
   <widget class="QStatusBar" name="statusbar"/>
   <action name="action_application">
    <property name="text">
-    <string>This &amp;Application</string>
+    <string>当前软件(&amp;S)</string>
    </property>
   </action>
   <action name="action_data_generation">
    <property name="text">
-    <string>Data &amp;Generation</string>
+    <string>测试数据生成(&amp;G)</string>
    </property>
   </action>
   <action name="actionData_Visualization">
@@ -85,37 +85,37 @@
   </action>
   <action name="action_result_metrics">
    <property name="text">
-    <string>Result &amp;Metrics</string>
+    <string>日志指标计算(&amp;M)</string>
    </property>
   </action>
   <action name="action_log_processing">
    <property name="text">
-    <string>&amp;Log Processing</string>
+    <string>日志路径处理(&amp;L)</string>
    </property>
   </action>
   <action name="action_message_logging">
    <property name="text">
-    <string>Message Lo&amp;gging</string>
+    <string>日志消息查询(&amp;Q)</string>
    </property>
   </action>
   <action name="action_spearman">
    <property name="text">
-    <string>&amp;Spearmanr Correlation Analysis</string>
+    <string>Spearmanr相关性分析(&amp;S)</string>
    </property>
   </action>
   <action name="action_anova">
    <property name="text">
-    <string>&amp;ANOVA Analysis</string>
+    <string>方差显著性分析(&amp;A)</string>
    </property>
   </action>
   <action name="action_scatter">
    <property name="text">
-    <string>Scatter &amp;Plot</string>
+    <string>散点图可视化(&amp;P)</string>
    </property>
   </action>
   <action name="action_boxplot">
    <property name="text">
-    <string>&amp;Box Plot</string>
+    <string>箱图分布可视化(&amp;B)</string>
    </property>
   </action>
  </widget>

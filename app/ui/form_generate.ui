@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Data Generation</string>
+   <string>测试数据生成</string>
   </property>
   <widget class="QLineEdit" name="edit_initial_num">
    <property name="geometry">
@@ -285,7 +285,7 @@
     </rect>
    </property>
    <property name="text">
-    <string>control_type (double click to edit)</string>
+    <string>control_type (双击编辑)</string>
    </property>
   </widget>
   <widget class="QTableWidget" name="table_result">
@@ -343,7 +343,7 @@
     </rect>
    </property>
    <property name="text">
-    <string>Completed.</string>
+    <string>已完成</string>
    </property>
    <property name="alignment">
     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -359,7 +359,7 @@
     </rect>
    </property>
    <property name="text">
-    <string>Generate</string>
+    <string>生成数据</string>
    </property>
    <property name="shortcut">
     <string>Return</string>

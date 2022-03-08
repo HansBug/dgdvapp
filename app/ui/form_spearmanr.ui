@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Spearmanr Correlation Analysis</string>
+   <string>Spearmanr相关性分析</string>
   </property>
   <widget class="QTabWidget" name="tabs_pages">
    <property name="geometry">
@@ -27,7 +27,7 @@
    </property>
    <widget class="QWidget" name="tab_data">
     <attribute name="title">
-     <string>Data</string>
+     <string>数据</string>
     </attribute>
     <widget class="QTableView" name="table_data">
      <property name="geometry">
@@ -49,7 +49,7 @@
       </rect>
      </property>
      <property name="text">
-      <string>&amp;Open...</string>
+      <string>打开...</string>
      </property>
      <property name="shortcut">
       <string>Ctrl+O</string>
@@ -78,7 +78,7 @@
       </rect>
      </property>
      <property name="text">
-      <string>&amp;Analysis</string>
+      <string>数据分析</string>
      </property>
      <property name="shortcut">
       <string>Return</string>
@@ -93,7 +93,7 @@
    </widget>
    <widget class="QWidget" name="tab_analysis">
     <attribute name="title">
-     <string>Analysis</string>
+     <string>分析面板</string>
     </attribute>
     <widget class="QTableView" name="table_analysis">
      <property name="geometry">
@@ -118,7 +118,7 @@
       </rect>
      </property>
      <property name="text">
-      <string>&amp;Export</string>
+      <string>分析结果导出</string>
      </property>
      <property name="shortcut">
       <string>Ctrl+S</string>

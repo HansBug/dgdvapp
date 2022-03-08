@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Log Process</string>
+   <string>日志路径处理</string>
   </property>
   <widget class="QTableView" name="table_processing">
    <property name="geometry">
@@ -46,7 +46,7 @@
     </rect>
    </property>
    <property name="text">
-    <string>Completed.</string>
+    <string>已完成</string>
    </property>
    <property name="alignment">
     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -62,7 +62,7 @@
     </rect>
    </property>
    <property name="text">
-    <string>&amp;Open...</string>
+    <string>打开...</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+O</string>
@@ -81,7 +81,7 @@
     </rect>
    </property>
    <property name="text">
-    <string>&amp;Start</string>
+    <string>开始处理</string>
    </property>
    <property name="shortcut">
     <string>Return</string>

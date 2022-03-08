@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Dialog</string>
+   <string>多选对话框</string>
   </property>
   <widget class="QDialogButtonBox" name="button_next">
    <property name="enabled">
