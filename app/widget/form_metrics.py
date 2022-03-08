@@ -52,7 +52,7 @@ class FormMetrics(QWidget, UIFormMetrics):
 
         metrics = self.list_metrics.get_enabled_metrics()
         model = QStandardItemModel(0, len(metrics) + 2)
-        model.setHorizontalHeaderLabels(['Path', 'Status', *metrics])
+        model.setHorizontalHeaderLabels(['路径', '状态', *metrics])
         self.table_result.setModel(model)
 
     def _init_open_dialog(self):
@@ -67,7 +67,7 @@ class FormMetrics(QWidget, UIFormMetrics):
                     self.label_path.setText(directory)
                     metrics = self.list_metrics.get_enabled_metrics()
                     model = QStandardItemModel(0, len(metrics) + 2)
-                    model.setHorizontalHeaderLabels(['Path', 'Status', *metrics])
+                    model.setHorizontalHeaderLabels(['路径', '状态', *metrics])
 
                     cnt = 0
                     for p in walk_log_directories(directory):
@@ -140,7 +140,7 @@ class FormMetrics(QWidget, UIFormMetrics):
             status.setText(processing.text)
             status.setIcon(processing.icon)
             model.setItem(i, 1, status)
-            self.label_status.setText(f'Running - {repr(i + 1)} / {repr(total_count)} ...')
+            self.label_status.setText(f'正在处理 - {repr(i + 1)} / {repr(total_count)} ...')
 
         def _after_loop(i, total_count, model, result: dict):
             status = model.item(i, 1)
@@ -155,12 +155,12 @@ class FormMetrics(QWidget, UIFormMetrics):
                 model.setItem(i, index + 2, QStandardItem(str(result[name])))
 
         def _deinit(total_count):
-            self.label_status.setText('Completed.')
+            self.label_status.setText('已完成')
             self.button_open.setEnabled(True)
             self.button_start.setEnabled(True)
             self.button_export.setEnabled(True)
             self.table_result.setSortingEnabled(True)
-            QMessageBox.information(self, 'Log Processing', 'Completed!')
+            QMessageBox.information(self, '日志指标计算', '计算完毕！')
 
         def _process():
             directory = self.table_result.property('directory')
@@ -180,7 +180,7 @@ class FormMetrics(QWidget, UIFormMetrics):
     def _init_export(self):
         def _export():
             filename, _ = QFileDialog.getSaveFileName(
-                self, 'Result Export',
+                self, '日志指标结果导出',
                 filter='*.csv', initialFilter='*.csv'
             )
             if filename:
@@ -198,6 +198,6 @@ class FormMetrics(QWidget, UIFormMetrics):
                             *[model.item(i, j + 2).text() for j in range(m)]
                         ])
 
-                QMessageBox.information(self, 'Result Export', 'Completed!')
+                QMessageBox.information(self, '日志指标结果导出', '导出完毕！')
 
         self.button_export.clicked.connect(_export)
