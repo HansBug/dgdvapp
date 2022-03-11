@@ -31,6 +31,10 @@ class DialogConfig(QDialog, UIDialogConfig):
         self.label_title.setFixedHeight(self.label_title.sizeHint().height())
         self.label_author.setFixedWidth(new_width)
         self.label_author.setFixedHeight(self.label_author.sizeHint().height())
+        self.button_dialog.setGeometry(
+            self.button_dialog.x() + (new_width - original_width), self.button_dialog.y(),
+            self.button_dialog.width(), self.button_dialog.height(),
+        )
         self.setFixedWidth(original_win_width + (new_width - original_width))
 
     def _event_close(self, btn):
