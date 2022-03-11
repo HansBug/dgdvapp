@@ -3,8 +3,11 @@ Overview:
     Meta information for app package.
 """
 
-#: Title of this project (should be `app`).
+#: Title of this project (should be `dgdvapp`).
 __TITLE__ = "dgdvapp"
+
+#: Shown name of this project.
+__SHOWN_NAME__ = '测试数据生成与分析工具'
 
 #: Version of this project.
 __VERSION__ = "0.1.4"
