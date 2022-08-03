@@ -35,7 +35,7 @@ class WidgetLabeledEdit(QWidget, UILabeledEdit):
         content_geo = self.edit_content.geometry()
         name_geo = self.edit_name.geometry()
         width = content_geo.x() + content_geo.width() + name_geo.x()
-        height = content_geo.width() + content_geo.y() * 2
+        height = content_geo.height() + content_geo.y() * 2
         self.setFixedSize(width, height)
 
     def _text_change_call(self):

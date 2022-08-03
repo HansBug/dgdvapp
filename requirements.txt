@@ -11,3 +11,4 @@ natsort>=8
 scipy>=1.5.0
 statsmodels>=0.12.0
 pyqtgraph>=0.11
+inflection>=0.5.1

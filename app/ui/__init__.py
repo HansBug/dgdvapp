@@ -11,3 +11,4 @@ from .form_scatter_ui import Ui_form_scatter as UIFormScatter
 from .form_spearmanr_ui import Ui_form_spearmanr as UIFormSpearmanr
 from .main_window_ui import Ui_main_window as UIMainWindow
 from .widget_labeled_edit_ui import Ui_LabeledEdit as UILabeledEdit
+from .widget_labeled_multiple_edit_ui import Ui_LabeledMultipleEdit as UILabeledMultipleEdit

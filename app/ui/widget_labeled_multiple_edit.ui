@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>LabeledEdit</class>
- <widget class="QWidget" name="LabeledEdit">
+ <class>LabeledMultipleEdit</class>
+ <widget class="QWidget" name="LabeledMultipleEdit">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -31,12 +31,28 @@
     <rect>
      <x>136</x>
      <y>6</y>
-     <width>171</width>
+     <width>141</width>
      <height>25</height>
     </rect>
    </property>
    <property name="alignment">
     <set>Qt::AlignCenter</set>
+   </property>
+   <property name="readOnly">
+    <bool>true</bool>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="edit_edit">
+   <property name="geometry">
+    <rect>
+     <x>277</x>
+     <y>6</y>
+     <width>30</width>
+     <height>25</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>...</string>
    </property>
   </widget>
  </widget>
