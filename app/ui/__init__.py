@@ -1,4 +1,4 @@
-from .dialog_combo_ui import Ui_dialog_combo as UiDialogCombo
+from .dialog_combo_ui import Ui_dialog_combo as UIDialogCombo
 from .dialog_config_ui import Ui_dialog_config as UIDialogConfig
 from .dialog_multiple_choice_ui import Ui_dialog_multiple_choice as UIDialogMultipleChoice
 from .form_anova_ui import Ui_form_anova as UIFormANOVA
