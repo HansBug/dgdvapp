@@ -54,7 +54,7 @@ class WidgetLabeledEdit(QWidget, UILabeledEdit):
         else:
             self.edit_content.setToolTip(f'{self.label}: {value!r}')
 
-        self._after_changed()
+        self._after_changed(valid, value)
 
     @property
     def value(self):
@@ -78,5 +78,5 @@ class WidgetLabeledEdit(QWidget, UILabeledEdit):
     def _validate(self, v):
         return v
 
-    def _after_changed(self):
+    def _after_changed(self, valid: bool, value):
         pass
