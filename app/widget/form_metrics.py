@@ -33,6 +33,10 @@ class FormMetrics(QWidget, UIFormMetrics):
     def _init_list_metrics(self):
         for name in _ALL_NAME_LIST:
             item = QListWidgetItem(self.list_metrics)
+            if name in _ALL_METRICS_LIST:
+                item.setBackground(QColor('lightblue'))
+            else:
+                item.setBackground(QColor('lightyellow'))
             item.setText(name)
             item.setCheckState(Qt.Checked)
 
