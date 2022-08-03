@@ -129,7 +129,8 @@ jobs:
       - name: Set up system dependences on windows
         if: ${{ env.OS_NAME == 'Windows' }}
         run: |
-          choco install tree cloc wget curl make zip protoc
+          choco install tree cloc wget curl make zip
+          choco install protoc --version=3.19.4
       - name: Set up system dependences on macos
         if: ${{ env.OS_NAME == 'MacOS' }}
         run: |
