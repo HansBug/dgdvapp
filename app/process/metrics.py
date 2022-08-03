@@ -287,11 +287,7 @@ def get_stable_time(outformation_data: List[Tuple[float, int, int]]) -> float:
     return ff(num / len(outformation_data) * 100)
 
 
-_ALL_NAME_LIST = [
-    # inputs
-    *_OUTPUT_NAMES,
-
-    # metrics
+_ALL_METRICS_LIST = [
     'formation_num',
     'initial_reduce',
     'final_total_size',
@@ -306,6 +302,14 @@ _ALL_NAME_LIST = [
     'loc_bias',
     # 'adjust_ratio',
     'stable_time',
+]
+
+_ALL_NAME_LIST = [
+    # inputs
+    *_OUTPUT_NAMES,
+
+    # metrics
+    *_ALL_METRICS_LIST,
 ]
 
 
