@@ -47,6 +47,14 @@ class WidgetEditCollection(QWidget):
             for name, edit in self._edit_dict.items()
         }
 
+    @property
+    def valid(self) -> bool:
+        for _, edit in self._edit_dict.items():
+            if not edit.valid:
+                return False
+
+        return True
+
     def _changed_method(self, widget: QWidget, value):
         self.changed.emit(widget, value)
 

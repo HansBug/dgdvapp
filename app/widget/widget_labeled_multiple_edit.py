@@ -93,6 +93,10 @@ class WidgetLabeledMultipleEdit(QWidget, UILabeledMultipleEdit):
         self._values = self._validate(newvs)
         self._text_change_call()
 
+    @property
+    def valid(self):
+        return True
+
     def _validate(self, vs):
         vs = _to_list(vs)
         result = []
