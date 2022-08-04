@@ -36,12 +36,13 @@ class AppMainWindow(QMainWindow, UIMainWindow):
     def _init_open_generate(self):
         # noinspection DuplicatedCode
         def _show_form():
-            form = FormGenerate()
-            sub_window = self.mdi_area.addSubWindow(form)
-            sub_window.setFixedSize(sub_window.width(), sub_window.height())
-            sub_window.setMaximumSize(sub_window.width(), sub_window.height())
-            sub_window.setWindowFlags(sub_window.windowFlags() & ~Qt.WindowMaximizeButtonHint)
-            sub_window.show()
+            open_ok, form = FormGenerate.open_config(self)
+            if open_ok:
+                sub_window = self.mdi_area.addSubWindow(form)
+                sub_window.setFixedSize(sub_window.width(), sub_window.height())
+                sub_window.setMaximumSize(sub_window.width(), sub_window.height())
+                sub_window.setWindowFlags(sub_window.windowFlags() & ~Qt.WindowMaximizeButtonHint)
+                sub_window.show()
 
         self.action_data_generation.triggered.connect(_show_form)
 

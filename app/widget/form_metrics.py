@@ -4,10 +4,10 @@ from types import MethodType
 from typing import List
 
 from PyQt5.Qt import QWidget, Qt, QStandardItemModel, QFileDialog, QStandardItem, QMessageBox, QThread, pyqtSignal, \
-    QListWidgetItem, QListWidget
+    QListWidgetItem, QListWidget, QColor
 
 from .models import ProcessingStatus
-from ..process import _ALL_NAME_LIST, walk_log_directories, get_all_metrics
+from ..process import _ALL_NAME_LIST, walk_log_directories, get_all_metrics, _ALL_METRICS_LIST
 from ..ui import UIFormMetrics
 
 
@@ -33,6 +33,10 @@ class FormMetrics(QWidget, UIFormMetrics):
     def _init_list_metrics(self):
         for name in _ALL_NAME_LIST:
             item = QListWidgetItem(self.list_metrics)
+            if name in _ALL_METRICS_LIST:
+                item.setBackground(QColor('lightblue'))
+            else:
+                item.setBackground(QColor('lightyellow'))
             item.setText(name)
             item.setCheckState(Qt.Checked)
 
@@ -152,7 +156,12 @@ class FormMetrics(QWidget, UIFormMetrics):
 
             metrics = self.list_metrics.get_enabled_metrics()
             for index, name in enumerate(metrics):
-                model.setItem(i, index + 2, QStandardItem(str(result[name])))
+                new_item = QStandardItem(str(result[name]))
+                if name in _ALL_METRICS_LIST:
+                    new_item.setBackground(QColor('lightblue'))
+                else:
+                    new_item.setBackground(QColor('lightyellow'))
+                model.setItem(i, index + 2, new_item)
 
         def _deinit(total_count):
             self.label_status.setText('已完成')

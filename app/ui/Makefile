@@ -17,7 +17,9 @@ UI_FILES := \
 	form_anova.ui \
 	dialog_multiple_choice.ui \
 	form_scatter.ui \
-	form_boxplot.ui
+	form_boxplot.ui \
+	widget_labeled_edit.ui \
+	widget_labeled_multiple_edit.ui
 GUI_PY_FILES := $(addsuffix _ui.py, $(basename ${UI_FILES}))
 
 all: build

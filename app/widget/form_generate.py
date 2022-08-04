@@ -1,18 +1,19 @@
 import csv
+import json
 import os
 from enum import IntEnum, unique
-from types import MethodType
-from typing import List
+from json import JSONDecodeError
+from typing import List, Optional, Dict, Tuple
 
 import qtawesome as qta
 from PyQt5.Qt import QWidget, QInputDialog, QToolButton, QMenu, QAction, QPoint, Qt, QMessageBox, QTableWidgetItem, \
-    QTableWidget, QThread, pyqtSignal, QFileDialog, QHeaderView, QIntValidator, QDoubleValidator
-from hbutils.color import Color
+    QTableWidget, QThread, pyqtSignal, QFileDialog, QHeaderView
 from hbutils.model import int_enum_loads
 from hbutils.string import plural_word
 from hbutils.testing import AETGGenerator, MatrixGenerator, BaseGenerator
 from natsort import natsorted
 
+from .widget_edit_collection import WidgetEditCollection
 from ..ui import UIFormGenerate
 
 
@@ -23,20 +24,66 @@ class GenerateMethod(IntEnum):
     MATRIX = 2
 
 
+_PROPERTY_CONFIG = [
+    {
+        'name': 'initial_num', 'init': 20,
+        'type': 'int', 'min': 1, 'max': 1000,
+    },
+    {
+        'name': 'loc_offset', 'init': 20,
+        'type': 'int', 'min': -500, 'max': 500,
+    },
+    {
+        'name': 'loc_err', 'init': 0.1,
+        'type': 'float', 'min': 0.0, 'max': 1.0,
+    },
+    {
+        'name': 'angle_error', 'init': 10.0,
+        'type': 'float', 'min': -10.0, 'max': 10.0,
+    },
+    {
+        'name': 'perception', 'multiple': True, 'init': [0.2, 0.5, 0.8],
+        'type': 'float', 'min': 0.0, 'max': 1.0,
+    },
+    {
+        'name': 'lost_possibility', 'multiple': True, 'init': [0.2, 0.5, 0.8],
+        'type': 'float', 'min': 0.0, 'max': 1.0,
+    },
+    {
+        'name': 'fuck', 'multiple': True, 'init': [3, 5],
+        'type': 'int', 'min': 1, 'max': 5,
+    },
+]
+
+
 class FormGenerate(QWidget, UIFormGenerate):
-    def __init__(self):
+    def __init__(self, config: Optional[List[Dict]] = None):
         QWidget.__init__(self)
+        self._property_config: List[Dict] = config or _PROPERTY_CONFIG
+        self._collection: Optional[WidgetEditCollection] = None
+
         self.setupUi(self)
         self._init()
 
+    @classmethod
+    def open_config(cls, parent) -> Tuple[bool, Optional['FormGenerate']]:
+        filename, _ = QFileDialog.getOpenFileName(parent, '加载参数配置', filter='*.json', initialFilter='*.json')
+        if filename:
+            try:
+                print(filename)
+                with open(filename, 'r') as sf:
+                    _config = json.load(sf)
+            except (IOError, PermissionError, JSONDecodeError) as err:
+                QMessageBox.critical(parent, '加载配置错误', f'加载配置出现错误，错误信息：{os.linesep}{err!r}.')
+                return False, None
+
+            return True, cls(_config)
+        else:
+            return False, None
+
     def _init(self):
         self._init_window_size()
-        self._init_initial_num()
-        self._init_loc_offset()
-        self._init_loc_err()
-        self._init_angle_error()
-        self._init_perception()
-        self._init_lost_possibility()
+        self._init_widget_properties()
         self._init_table_control_type()
         self._init_table_result()
         self._init_button_generate()
@@ -46,218 +93,13 @@ class FormGenerate(QWidget, UIFormGenerate):
         self.setMaximumSize(self.width(), self.height())
         self.setWindowFlags(self.windowFlags() & ~Qt.WindowMaximizeButtonHint)
 
-    def _init_initial_num(self):
-        _validator = QIntValidator(1, 1000, self.edit_initial_num)
-        self.edit_initial_num.setValidator(_validator)
-
-        def _validate(t):
-            try:
-                v = int(t)
-            except ValueError:
-                return False, None
-
-            if 1 <= v <= 1000:
-                return True, v
-            else:
-                return False, None
-
-        def _text_change():
-            text = self.edit_initial_num.text()
-            ok, val = _validate(text)
-            self.edit_initial_num.setProperty('ok', ok)
-            self.edit_initial_num.setProperty('value', val)
-
-            color = Color('black' if ok else 'red')
-            self.edit_initial_num.setStyleSheet(f"QLineEdit {{ color: {color}; }}")
-            self.label_initial_num.setStyleSheet(f"QLabel {{ color: {color}; }}")
-            self._update_enablement()
-
-        _text_change()
-        self.edit_initial_num.textChanged.connect(_text_change)
-
-    def _init_loc_offset(self):
-        _validator = QIntValidator(-500, 500, self.edit_loc_offset)
-        self.edit_loc_offset.setValidator(_validator)
-
-        def _validate(t):
-            try:
-                v = int(t)
-            except ValueError:
-                return False, None
-
-            if -500 <= v <= 500:
-                return True, v
-            else:
-                return False, None
-
-        def _text_change():
-            text = self.edit_loc_offset.text()
-            ok, val = _validate(text)
-            self.edit_loc_offset.setProperty('ok', ok)
-            self.edit_loc_offset.setProperty('value', val)
-
-            color = Color('black' if ok else 'red')
-            self.edit_loc_offset.setStyleSheet(f"QLineEdit {{ color: {color}; }}")
-            self.label_loc_offset.setStyleSheet(f"QLabel {{ color: {color}; }}")
-            self._update_enablement()
-
-        _text_change()
-        self.edit_loc_offset.textChanged.connect(_text_change)
-
-    def _init_loc_err(self):
-        _validator = QDoubleValidator(0.0, 1.0, 4, self.edit_loc_err)
-        self.edit_loc_err.setValidator(_validator)
-
-        def _validate(t):
-            try:
-                v = float(t)
-            except ValueError:
-                return False, None
-
-            if 0.0 <= v <= 1.0:
-                return True, v
-            else:
-                return False, None
-
-        def _text_change():
-            text = self.edit_loc_err.text()
-            ok, val = _validate(text)
-            self.edit_loc_err.setProperty('ok', ok)
-            self.edit_loc_err.setProperty('value', val)
-
-            color = Color('black' if ok else 'red')
-            self.edit_loc_err.setStyleSheet(f"QLineEdit {{ color: {color}; }}")
-            self.label_loc_err.setStyleSheet(f"QLabel {{ color: {color}; }} ")
-            self._update_enablement()
-
-        _text_change()
-        self.edit_loc_err.textChanged.connect(_text_change)
-
-    def _init_angle_error(self):
-        _validator = QDoubleValidator(-10.0, 10.0, 4, self.edit_angle_err)
-        self.edit_angle_err.setValidator(_validator)
-
-        def _validate(t):
-            try:
-                v = float(t)
-            except ValueError:
-                return False, None
-
-            if -10.0 <= v <= 10.0:
-                return True, v
-            else:
-                return False, None
-
-        def _text_change():
-            text = self.edit_angle_err.text()
-            ok, val = _validate(text)
-            self.edit_angle_err.setProperty('ok', ok)
-            self.edit_angle_err.setProperty('value', val)
-
-            color = Color('black' if ok else 'red')
-            self.edit_angle_err.setStyleSheet(f"QLineEdit {{ color: {color}; }}")
-            self.label_angle_err.setStyleSheet(f"QLabel {{ color: {color}; }} ")
-            self._update_enablement()
-
-        _text_change()
-        self.edit_angle_err.textChanged.connect(_text_change)
-
-    def _init_perception(self):
-        def _validate(t):
-            try:
-                v = float(t)
-            except ValueError:
-                return False, None
-
-            if 0.0 <= v <= 1.0:
-                return True, v
-            else:
-                return False, None
-
-        def _save_items(items, fail):
-            values, invalid = [], None
-            for text in items:
-                ok, val = _validate(text)
-                if ok:
-                    values.append(val)
-                else:
-                    invalid = text
-                    break
-
-            if invalid is None:
-                self.edit_perception.setText(','.join(items))
-                self.edit_perception.setProperty('values', values)
-            else:
-                fail(invalid)
-
-        def _edit_perception():
-            current_items = self.perceptions
-            result_str, result_ok = QInputDialog.getMultiLineText(self, '修改Perception值', '请输入新值:',
-                                                                  os.linesep.join(current_items))
-            if result_ok:
-                items = natsorted(filter(bool, map(str.strip, result_str.splitlines())))
-                _save_items(items, lambda invalid: QMessageBox.information(
-                    self, '修改Perception值', f'非法perception值 - {repr(invalid)}.'))
-
-        _button_edit = QToolButton(self)
-        _button_edit.setFixedHeight(self.edit_perception.height())
-        _button_edit.setFixedWidth(self.edit_initial_num.width() - self.edit_perception.width())
-        _button_edit.setText('...')
-        _button_edit.move(self.edit_perception.x() + self.edit_perception.width(), self.edit_perception.y())
-        _button_edit.clicked.connect(_edit_perception)
-        self.edit_perception.mouseDoubleClickEvent = MethodType(lambda s, e: _edit_perception(), self)
-
-        its = natsorted(filter(bool, map(str.strip, self.edit_perception.text().split(','))))
-        _save_items(its, lambda x: None)
-
-    def _init_lost_possibility(self):
-        def _validate(t):
-            try:
-                v = float(t)
-            except ValueError:
-                return False, None
-
-            if 0.0 <= v <= 1.0:
-                return True, v
-            else:
-                return False, None
-
-        def _save_items(items, fail):
-            values, invalid = [], None
-            for text in items:
-                ok, val = _validate(text)
-                if ok:
-                    values.append(val)
-                else:
-                    invalid = text
-                    break
-
-            if invalid is None:
-                self.edit_lost_possibility.setText(','.join(items))
-                self.edit_lost_possibility.setProperty('values', values)
-            else:
-                fail(invalid)
-
-        def _edit_lost_possibility():
-            current_items = self.lost_possibilities
-            result_str, result_ok = QInputDialog.getMultiLineText(
-                self, '修改Lost Possibilities值', '请输入新lost_possibilities值:', os.linesep.join(current_items))
-            if result_ok:
-                items = natsorted(filter(bool, map(str.strip, result_str.splitlines())))
-                _save_items(items, lambda invalid: QMessageBox.information(
-                    self, '修改Lost Possibilities值', f'非法lost possibility值 - {repr(invalid)}.'))
-
-        _button_edit = QToolButton(self)
-        _button_edit.setFixedHeight(self.edit_lost_possibility.height())
-        _button_edit.setFixedWidth(self.edit_initial_num.width() - self.edit_lost_possibility.width())
-        _button_edit.setText('...')
-        _button_edit.move(self.edit_lost_possibility.x() + self.edit_lost_possibility.width(),
-                          self.edit_lost_possibility.y())
-        _button_edit.clicked.connect(_edit_lost_possibility)
-        self.edit_lost_possibility.mouseDoubleClickEvent = MethodType(lambda s, e: _edit_lost_possibility(), self)
-
-        its = natsorted(filter(bool, map(str.strip, self.edit_lost_possibility.text().split(','))))
-        _save_items(its, lambda x: None)
+    def _init_widget_properties(self):
+        self._collection = WidgetEditCollection.parse_json(
+            self._property_config, self.widget_properties,
+            height=self.widget_properties.height() - 15,
+            width=self.widget_properties.width() - 10,
+        )
+        self._collection.textChanged.connect(lambda w, v, vv: self._update_enablement())
 
     def _init_table_control_type(self):
         table = self.table_control_type
@@ -506,7 +348,10 @@ class FormGenerate(QWidget, UIFormGenerate):
         table: QTableWidget = self.table_result
         table.setSortingEnabled(True)
         self._table_result_set_title(
-            ['initial_num', 'loc_offset', 'loc_err', 'angle_err', 'perception', 'lost_possibility', 'control_num']
+            [
+                *(prop['name'] for prop in self._property_config),
+                'control_num'
+            ]
         )
 
         def _export_to_csv():
@@ -561,15 +406,23 @@ class FormGenerate(QWidget, UIFormGenerate):
 
         def _generate(method):
             method: GenerateMethod = GenerateMethod.loads(method)
-            table_title = ['initial_num', 'loc_offset', 'loc_err', 'angle_err',
-                           'perception', 'lost_possibility', 'control_num']
-            names = ['perception', 'lost_possibility', ]
+            _properties = self._collection.value
+            table_title = [*_properties.keys(), 'control_num']
+
+            names = []
+            free_names = []
             time_names = []
             control_names = []
-            values = {
-                'perception': self.perceptions,
-                'lost_possibility': self.lost_possibilities,
-            }
+            values = {}
+            _fixed_dict = {}
+            for name, value in _properties.items():
+                if isinstance(value, list):
+                    names.append(name)
+                    values[name] = value
+                    free_names.append(name)
+                else:
+                    _fixed_dict[name] = value
+
             mappings = {}
             for index, control_item in enumerate(self.control_items):
                 ctimes, ccontrols = control_item['time'], control_item['control']
@@ -596,7 +449,7 @@ class FormGenerate(QWidget, UIFormGenerate):
                 generator = AETGGenerator(
                     values=values, names=names,
                     pairs=[
-                        ('perception', 'lost_possibility'),
+                        tuple(free_names),
                         tuple(time_names),
                         tuple(control_names),
                     ]
@@ -614,11 +467,17 @@ class FormGenerate(QWidget, UIFormGenerate):
                 self.label_status.setText(f'初始化完毕...')
 
             def _new_result(inx, pi):
-                vs = [
-                    self.initial_num, self.loc_offset, self.loc_err, self.angle_err,
-                    pi[0], pi[1], self.control_num,
-                ]
-                for i in range(2, len(pi), 2):
+                _pair_offset = 0
+                vs = []
+                for name_, value_ in _properties.items():
+                    if isinstance(value_, list):
+                        vs.append(pi[_pair_offset])
+                        _pair_offset += 1
+                    else:
+                        vs.append(value_)
+
+                vs.append(self.control_num)
+                for i in range(_pair_offset, len(pi), 2):
                     tvalue = mappings[names[i]][pi[i]]
                     cvalue = mappings[names[i + 1]][pi[i + 1]]
                     vs.append(tvalue)
@@ -649,35 +508,7 @@ class FormGenerate(QWidget, UIFormGenerate):
         self.button_generate.setPopupMode(QToolButton.ToolButtonPopupMode.InstantPopup)
 
     def _update_enablement(self):
-        ok = bool(
-            self.edit_initial_num.property('ok') and self.edit_loc_offset.property('ok') and
-            self.edit_loc_err.property('ok') and self.edit_angle_err.property('ok')
-        )
-        self.button_generate.setEnabled(ok)
-
-    @property
-    def initial_num(self) -> str:
-        return str(self.edit_initial_num.property('value'))
-
-    @property
-    def loc_offset(self) -> str:
-        return str(self.edit_loc_offset.property('value'))
-
-    @property
-    def loc_err(self) -> str:
-        return str(self.edit_loc_err.property('value'))
-
-    @property
-    def angle_err(self) -> str:
-        return str(self.edit_angle_err.property('value'))
-
-    @property
-    def perceptions(self) -> List[str]:
-        return list(map(str, self.edit_perception.property('values')))
-
-    @property
-    def lost_possibilities(self) -> List[str]:
-        return list(map(str, self.edit_lost_possibility.property('values')))
+        self.button_generate.setEnabled(self._collection.valid)
 
     @property
     def control_num(self) -> str:

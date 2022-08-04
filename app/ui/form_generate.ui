@@ -6,223 +6,19 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1019</width>
-    <height>523</height>
+    <width>1054</width>
+    <height>555</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>测试数据生成</string>
   </property>
-  <widget class="QLineEdit" name="edit_initial_num">
-   <property name="geometry">
-    <rect>
-     <x>150</x>
-     <y>30</y>
-     <width>171</width>
-     <height>25</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>20</string>
-   </property>
-   <property name="alignment">
-    <set>Qt::AlignCenter</set>
-   </property>
-   <property name="placeholderText">
-    <string>[1, 1000]</string>
-   </property>
-  </widget>
-  <widget class="QLineEdit" name="edit_loc_offset">
-   <property name="geometry">
-    <rect>
-     <x>150</x>
-     <y>70</y>
-     <width>171</width>
-     <height>25</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>20</string>
-   </property>
-   <property name="alignment">
-    <set>Qt::AlignCenter</set>
-   </property>
-   <property name="placeholderText">
-    <string>[-500, 500]</string>
-   </property>
-  </widget>
-  <widget class="QLabel" name="label_initial_num">
-   <property name="geometry">
-    <rect>
-     <x>20</x>
-     <y>33</y>
-     <width>121</width>
-     <height>17</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>initial_num</string>
-   </property>
-  </widget>
-  <widget class="QLabel" name="label_loc_offset">
-   <property name="geometry">
-    <rect>
-     <x>20</x>
-     <y>72</y>
-     <width>121</width>
-     <height>17</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>loc_offset</string>
-   </property>
-  </widget>
-  <widget class="QLineEdit" name="edit_loc_err">
-   <property name="geometry">
-    <rect>
-     <x>150</x>
-     <y>108</y>
-     <width>171</width>
-     <height>25</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>0.1</string>
-   </property>
-   <property name="frame">
-    <bool>true</bool>
-   </property>
-   <property name="echoMode">
-    <enum>QLineEdit::Normal</enum>
-   </property>
-   <property name="alignment">
-    <set>Qt::AlignCenter</set>
-   </property>
-   <property name="placeholderText">
-    <string>[0.0, 1.0]</string>
-   </property>
-  </widget>
-  <widget class="QLabel" name="label_loc_err">
-   <property name="geometry">
-    <rect>
-     <x>20</x>
-     <y>110</y>
-     <width>121</width>
-     <height>17</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>loc_err</string>
-   </property>
-  </widget>
-  <widget class="QLineEdit" name="edit_angle_err">
-   <property name="geometry">
-    <rect>
-     <x>150</x>
-     <y>148</y>
-     <width>171</width>
-     <height>25</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>10</string>
-   </property>
-   <property name="alignment">
-    <set>Qt::AlignCenter</set>
-   </property>
-   <property name="placeholderText">
-    <string>[-10, 10]</string>
-   </property>
-  </widget>
-  <widget class="QLabel" name="label_angle_err">
-   <property name="geometry">
-    <rect>
-     <x>20</x>
-     <y>150</y>
-     <width>121</width>
-     <height>17</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>angle_err</string>
-   </property>
-  </widget>
-  <widget class="QLineEdit" name="edit_perception">
-   <property name="geometry">
-    <rect>
-     <x>150</x>
-     <y>188</y>
-     <width>141</width>
-     <height>25</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>0.2,0.5,0.8,1</string>
-   </property>
-   <property name="alignment">
-    <set>Qt::AlignCenter</set>
-   </property>
-   <property name="readOnly">
-    <bool>true</bool>
-   </property>
-   <property name="placeholderText">
-    <string>perception</string>
-   </property>
-  </widget>
-  <widget class="QLabel" name="label_perception">
-   <property name="geometry">
-    <rect>
-     <x>20</x>
-     <y>190</y>
-     <width>121</width>
-     <height>17</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>perception</string>
-   </property>
-  </widget>
-  <widget class="QLineEdit" name="edit_lost_possibility">
-   <property name="geometry">
-    <rect>
-     <x>150</x>
-     <y>230</y>
-     <width>141</width>
-     <height>25</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>0.2,0.5,0.8,1</string>
-   </property>
-   <property name="alignment">
-    <set>Qt::AlignCenter</set>
-   </property>
-   <property name="readOnly">
-    <bool>true</bool>
-   </property>
-   <property name="placeholderText">
-    <string>lost_possibility</string>
-   </property>
-  </widget>
-  <widget class="QLabel" name="label_lost_possibility">
-   <property name="geometry">
-    <rect>
-     <x>20</x>
-     <y>232</y>
-     <width>121</width>
-     <height>17</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>lost_possibility</string>
-   </property>
-  </widget>
   <widget class="QLineEdit" name="edit_control_num">
    <property name="geometry">
     <rect>
      <x>150</x>
-     <y>268</y>
-     <width>171</width>
+     <y>320</y>
+     <width>231</width>
      <height>25</height>
     </rect>
    </property>
@@ -243,7 +39,7 @@
    <property name="geometry">
     <rect>
      <x>20</x>
-     <y>270</y>
+     <y>322</y>
      <width>121</width>
      <height>17</height>
     </rect>
@@ -256,8 +52,8 @@
    <property name="geometry">
     <rect>
      <x>20</x>
-     <y>331</y>
-     <width>301</width>
+     <y>373</y>
+     <width>361</width>
      <height>171</height>
     </rect>
    </property>
@@ -279,8 +75,8 @@
    <property name="geometry">
     <rect>
      <x>20</x>
-     <y>310</y>
-     <width>291</width>
+     <y>352</y>
+     <width>351</width>
      <height>17</height>
     </rect>
    </property>
@@ -291,10 +87,10 @@
   <widget class="QTableWidget" name="table_result">
    <property name="geometry">
     <rect>
-     <x>340</x>
+     <x>390</x>
      <y>30</y>
-     <width>661</width>
-     <height>441</height>
+     <width>651</width>
+     <height>471</height>
     </rect>
    </property>
    <column>
@@ -336,8 +132,8 @@
   <widget class="QLabel" name="label_status">
    <property name="geometry">
     <rect>
-     <x>694</x>
-     <y>482</y>
+     <x>730</x>
+     <y>520</y>
      <width>301</width>
      <height>20</height>
     </rect>
@@ -352,10 +148,10 @@
   <widget class="QToolButton" name="button_generate">
    <property name="geometry">
     <rect>
-     <x>340</x>
-     <y>480</y>
+     <x>390</x>
+     <y>510</y>
      <width>301</width>
-     <height>25</height>
+     <height>31</height>
     </rect>
    </property>
    <property name="text">
@@ -363,6 +159,16 @@
    </property>
    <property name="shortcut">
     <string>Return</string>
+   </property>
+  </widget>
+  <widget class="QWidget" name="widget_properties" native="true">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>10</y>
+     <width>371</width>
+     <height>301</height>
+    </rect>
    </property>
   </widget>
  </widget>
