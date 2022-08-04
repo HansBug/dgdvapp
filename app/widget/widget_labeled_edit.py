@@ -1,10 +1,15 @@
-from PyQt5.Qt import QWidget
+import math
+
+from PyQt5.Qt import QWidget, pyqtSignal
 from hbutils.color import Color
 
 from ..ui import UILabeledEdit
 
 
 class WidgetLabeledEdit(QWidget, UILabeledEdit):
+    changed = pyqtSignal(object)  # only saved changes
+    textChanged = pyqtSignal(bool, object)  # all the changes
+
     def __init__(self, parent, label, init_value=None, placeholder=None):
         QWidget.__init__(self, parent)
         self.label = label
@@ -54,7 +59,13 @@ class WidgetLabeledEdit(QWidget, UILabeledEdit):
         else:
             self.edit_content.setToolTip(f'{self.label}: {value!r}')
 
-        self._after_changed(valid, value)
+        self.textChanged.emit(valid, value if valid else self.edit_content.text())
+        if valid:
+            self.changed.emit(value)
+
+    @property
+    def name(self) -> str:
+        return self.label
 
     @property
     def value(self):
@@ -78,5 +89,31 @@ class WidgetLabeledEdit(QWidget, UILabeledEdit):
     def _validate(self, v):
         return v
 
-    def _after_changed(self, valid: bool, value):
-        pass
+    @classmethod
+    def parse_json(cls, d: dict, parent=None) -> 'WidgetLabeledEdit':
+        name = d['name']
+        assert not d.get('multiple', None), f'Multiple not supported in {cls!r}.'
+        placeholder = d.get('placeholder', None)
+
+        min_ = d.get('min', -math.inf)
+        max_ = d.get('max', +math.inf)
+        type_ = d.get('type')
+        if isinstance(type_, str):
+            type_ = eval(type_)
+
+        init_value = d.get('init')
+
+        class _MyEdit(WidgetLabeledEdit):
+            def _validate(self, v):
+                if type_ is not None:
+                    try:
+                        v = type_(v)
+                    except (TypeError, ValueError) as err:
+                        raise ValueError(*err.args).with_traceback(err.__traceback__)
+
+                if min_ <= v <= max_:
+                    return v
+                else:
+                    raise ValueError(f'Value in [{min_!r}, {max_!r}] expected, but {v!r} found.')
+
+        return _MyEdit(parent, name, init_value, placeholder)
