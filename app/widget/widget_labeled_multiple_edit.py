@@ -77,7 +77,7 @@ class WidgetLabeledMultipleEdit(QWidget, UILabeledMultipleEdit):
 
     def _text_change_call(self):
         self.edit_content.setText(self._repr())
-        self.edit_content.setToolTip(os.linesep.join(map(self._devalidate_one, self._values)))
+        self.edit_content.setToolTip(f"{self.label}: " + ",".join(map(self._devalidate_one, self._values)))
         self.changed.emit(self._values)
 
     @property

@@ -1,7 +1,11 @@
 from functools import partial
 from typing import Dict, Any, Collection, Optional
+from typing import List
 
 from PyQt5.Qt import QWidget, QVBoxLayout, QScrollArea, pyqtSignal
+
+from .widget_labeled_edit import WidgetLabeledEdit
+from .widget_labeled_multiple_edit import WidgetLabeledMultipleEdit
 
 
 class WidgetEditCollection(QWidget):
@@ -48,3 +52,15 @@ class WidgetEditCollection(QWidget):
 
     def _text_changed_method(self, widget: QWidget, valid: bool, value):
         self.textChanged.emit(widget, valid, value)
+
+    @classmethod
+    def parse_json(cls, d: List[dict], parent=None, height=None, width=None) -> 'WidgetEditCollection':
+        edits = []
+        for item in d:
+            if item.get('multiple'):
+                edit = WidgetLabeledMultipleEdit.parse_json(item)
+            else:
+                edit = WidgetLabeledEdit.parse_json(item)
+            edits.append(edit)
+
+        return WidgetEditCollection(parent, height, width, edits)
