@@ -1,7 +1,9 @@
 import csv
+import json
 import os
 from enum import IntEnum, unique
-from typing import List, Optional, Dict
+from json import JSONDecodeError
+from typing import List, Optional, Dict, Tuple
 
 import qtawesome as qta
 from PyQt5.Qt import QWidget, QInputDialog, QToolButton, QMenu, QAction, QPoint, Qt, QMessageBox, QTableWidgetItem, \
@@ -25,31 +27,31 @@ class GenerateMethod(IntEnum):
 _PROPERTY_CONFIG = [
     {
         'name': 'initial_num', 'init': 20,
-        'type': int, 'min': 1, 'max': 1000,
+        'type': 'int', 'min': 1, 'max': 1000,
     },
     {
         'name': 'loc_offset', 'init': 20,
-        'type': int, 'min': -500, 'max': 500,
+        'type': 'int', 'min': -500, 'max': 500,
     },
     {
         'name': 'loc_err', 'init': 0.1,
-        'type': float, 'min': 0.0, 'max': 1.0,
+        'type': 'float', 'min': 0.0, 'max': 1.0,
     },
     {
         'name': 'angle_error', 'init': 10.0,
-        'type': float, 'min': -10.0, 'max': 10.0,
+        'type': 'float', 'min': -10.0, 'max': 10.0,
     },
     {
         'name': 'perception', 'multiple': True, 'init': [0.2, 0.5, 0.8],
-        'type': float, 'min': 0.0, 'max': 1.0,
+        'type': 'float', 'min': 0.0, 'max': 1.0,
     },
     {
         'name': 'lost_possibility', 'multiple': True, 'init': [0.2, 0.5, 0.8],
-        'type': float, 'min': 0.0, 'max': 1.0,
+        'type': 'float', 'min': 0.0, 'max': 1.0,
     },
     {
         'name': 'fuck', 'multiple': True, 'init': [3, 5],
-        'type': int, 'min': 1, 'max': 5,
+        'type': 'int', 'min': 1, 'max': 5,
     },
 ]
 
@@ -62,6 +64,22 @@ class FormGenerate(QWidget, UIFormGenerate):
 
         self.setupUi(self)
         self._init()
+
+    @classmethod
+    def open_config(cls, parent) -> Tuple[bool, Optional['FormGenerate']]:
+        filename, _ = QFileDialog.getOpenFileName(parent, '加载参数配置', filter='*.json', initialFilter='*.json')
+        if filename:
+            try:
+                print(filename)
+                with open(filename, 'r') as sf:
+                    _config = json.load(sf)
+            except (IOError, PermissionError, JSONDecodeError) as err:
+                QMessageBox.critical(parent, '加载配置错误', f'加载配置出现错误，错误信息：{os.linesep}{err!r}.')
+                return False, None
+
+            return True, cls(_config)
+        else:
+            return False, None
 
     def _init(self):
         self._init_window_size()
