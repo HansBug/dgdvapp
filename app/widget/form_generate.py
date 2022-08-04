@@ -96,8 +96,8 @@ class FormGenerate(QWidget, UIFormGenerate):
     def _init_widget_properties(self):
         self._collection = WidgetEditCollection.parse_json(
             self._property_config, self.widget_properties,
-            height=self.widget_properties.height() - 10,
-            width=self.widget_properties.width() - 15,
+            height=self.widget_properties.height() - 15,
+            width=self.widget_properties.width() - 10,
         )
         self._collection.textChanged.connect(lambda w, v, vv: self._update_enablement())
 
