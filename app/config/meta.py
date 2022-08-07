@@ -10,7 +10,7 @@ __TITLE__ = "dgdvapp"
 __SHOWN_NAME__ = '测试数据生成与分析工具'
 
 #: Version of this project.
-__VERSION__ = "1.1.0"
+__VERSION__ = "1.1.1"
 
 #: Short description of the project, will be included in ``setup.py``.
 __DESCRIPTION__ = 'Demo Application of PyQt5.'
