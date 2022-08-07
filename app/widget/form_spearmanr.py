@@ -15,6 +15,33 @@ from .models import NameStatus
 from ..ui import UIFormSpearmanr
 
 
+def _get_sigmoid(x1, y1, x2, y2):
+    def sigmoid(x):
+        return 1 / (1 + math.exp(-x))
+
+    def anti_sigmoid(y):
+        return -math.log(1 / y - 1)
+
+    # x1 = -math.log(0.05) / math.log(10)
+    # x2 = -math.log(0.01) / math.log(10)
+    xe1 = anti_sigmoid(y1)
+    xe2 = anti_sigmoid(y2)
+    k = (xe2 - xe1) / (x2 - x1)
+    b = xe1 - k * x1
+
+    return lambda x: sigmoid(k * x + b)
+
+
+_spearmanr_sigmoid_raw = _get_sigmoid(
+    -math.log(0.2), 0.05,
+    -math.log(0.05), 0.85,
+)
+
+
+def _spearmanr_pval_sigmoid(x):
+    return _spearmanr_sigmoid_raw(-math.log(x))
+
+
 class FormSpearmanr(QWidget, UIFormSpearmanr):
     def __init__(self):
         QWidget.__init__(self)
@@ -168,14 +195,14 @@ class FormSpearmanr(QWidget, UIFormSpearmanr):
         def _before_loop(xname, yname, i, total, xi, yi):
             pass
 
-        def _color_choose(rho):
+        def _color_choose(rho, pval):
             if math.isnan(rho):
                 return str(Color.from_hls(2 / 3, 0.985, 1.0))
             else:
                 return str(Color.from_hls(
                     (1 - rho) / 6,
                     (3 * (abs(rho) - 1) ** 2 + 5) / 8,
-                    1.0
+                    _spearmanr_pval_sigmoid(pval),
                 ))
 
         # noinspection PyUnusedLocal
@@ -184,7 +211,7 @@ class FormSpearmanr(QWidget, UIFormSpearmanr):
             item = QStandardItem('nan' if math.isnan(rho) else '%.4f' % (rho,))
             item.setData(rho)
             item.setFlags(Qt.ItemIsEnabled)
-            item.setBackground(QBrush(QColor(_color_choose(rho))))
+            item.setBackground(QBrush(QColor(_color_choose(rho, pval))))
             item.setToolTip(f'{xname} -> {yname}:\n'
                             f'相关系数: {rho}\n'
                             f'p值: {pval}\n'
